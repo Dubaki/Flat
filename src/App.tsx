@@ -114,7 +114,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-28 pb-12 w-full">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-12 w-full">
       {/* Background Image */}
       <div className="absolute inset-0 z-0 w-full h-full">
         <img 
@@ -126,7 +126,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/60 w-full h-full" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full flex justify-center text-center lg:justify-start lg:text-left">
+      <div className="max-w-7xl mx-auto px-6 w-full flex justify-center text-center lg:justify-start lg:text-left">
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -200,7 +200,7 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="section-padding bg-slate-50 w-full">
+    <section id="services" className="section-padding bg-slate-50 w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Цены на ремонт в Екатеринбурге</h2>
@@ -306,7 +306,7 @@ const Stages = () => {
   ];
 
   return (
-    <section id="stages" className="section-padding bg-white w-full">
+    <section id="stages" className="section-padding bg-white w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Детальная разбивка работ</h2>
@@ -477,7 +477,7 @@ const Portfolio = () => {
   ];
 
   return (
-    <section id="portfolio" className="section-padding bg-slate-900 text-white w-full">
+    <section id="portfolio" className="section-padding bg-slate-900 text-white w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
@@ -527,7 +527,7 @@ const InteractiveCalculator = () => {
   const totalEstimated = totalWorkCost + roughMaterialsCost;
 
   return (
-    <section id="calculator" className="section-padding bg-slate-50 w-full">
+    <section id="calculator" className="section-padding bg-slate-50 w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Калькулятор ремонта</h2>
@@ -651,7 +651,7 @@ const InteractiveCalculator = () => {
 
 const Contact = () => {
   return (
-    <section id="contact" className="section-padding w-full">
+    <section id="contact" className="section-padding w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -823,9 +823,9 @@ export default function App() {
   return (
     <HelmetProvider>
       <HashRouter>
-        <div className="min-h-screen font-sans">
+        <div className="min-h-screen font-sans w-full overflow-x-hidden">
           <Navbar />
-          <main>
+          <main className="w-full">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/kosmeticheskiy-remont" element={<CosmeticRepair />} />
