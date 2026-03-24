@@ -31,6 +31,31 @@ import {
 
 // --- Components ---
 
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const HashScrollLinkButton: React.FC<{ to: string; className?: string; children: React.ReactNode }> = ({ to, className, children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(to)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      document.getElementById(to)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <a href={`#${to}`} onClick={handleClick} className={className}>
+      {children}
+    </a>
+  );
+};
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -64,13 +89,23 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6 lg:gap-8">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href} 
-              className={`text-sm font-medium hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`}
-            >
-              {link.name}
-            </a>
+            link.href.startsWith('/#') ? (
+              <HashScrollLinkButton 
+                key={link.name} 
+                to={link.href.substring(2)} 
+                className={`text-sm font-medium hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`}
+              >
+                {link.name}
+              </HashScrollLinkButton>
+            ) : (
+              <Link 
+                key={link.name} 
+                to={link.href} 
+                className={`text-sm font-medium hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`}
+              >
+                {link.name}
+              </Link>
+            )
           ))}
           <div className="flex items-center gap-4">
             <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`} title="Позвонить">
@@ -99,16 +134,70 @@ const Navbar = () => {
       {/* Mobile Nav Links Row */}
       <div className={`lg:hidden max-w-7xl mx-auto px-6 mt-4 flex overflow-x-auto gap-6 pb-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`}>
         {navLinks.map((link) => (
-          <a 
-            key={link.name} 
-            href={link.href} 
-            className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isScrolled ? 'text-primary' : 'text-white/90'}`}
-          >
-            {link.name}
-          </a>
+          link.href.startsWith('/#') ? (
+            <HashScrollLinkButton 
+              key={link.name} 
+              to={link.href.substring(2)} 
+              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isScrolled ? 'text-primary' : 'text-white/90'}`}
+            >
+              {link.name}
+            </HashScrollLinkButton>
+          ) : (
+            <Link 
+              key={link.name} 
+              to={link.href} 
+              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isScrolled ? 'text-primary' : 'text-white/90'}`}
+            >
+              {link.name}
+            </Link>
+          )
         ))}
       </div>
     </nav>
+  );
+};
+
+const DirectorCard = () => {
+  return (
+    <div className="relative max-w-sm mx-auto lg:ml-auto lg:mr-0 xl:mr-10 mt-10 lg:mt-0">
+      {/* Декоративный фон */}
+      <div className="absolute -inset-4 bg-accent/20 rounded-[2.5rem] blur-2xl transform -rotate-3"></div>
+      
+      <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-[2rem] shadow-2xl">
+        <div className="relative overflow-hidden rounded-t-[1.75rem] rounded-b-xl aspect-[4/5] bg-slate-800">
+          <img 
+            src="/alex.png" 
+            alt="Александр - руководитель" 
+            className="w-full h-full object-cover object-top"
+          />
+          {/* Плашка должности снизу поверх фото */}
+          <div className="absolute bottom-4 right-4 bg-accent text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            Основатель
+          </div>
+        </div>
+        
+        <div className="p-6 text-white text-left">
+          <h4 className="font-bold text-xl mb-1">Александр Олегович</h4>
+          <p className="text-accent text-sm font-semibold mb-4">Руководитель компании</p>
+          <div className="h-px w-full bg-white/10 mb-4"></div>
+          <p className="text-sm text-white/80 leading-relaxed italic">
+            «Я лично контролирую каждый объект. Мы работаем прозрачно, не занижаем сметы для заманивания и отвечаем за качество по договору.»
+          </p>
+        </div>
+      </div>
+
+      {/* Карточка доверия */}
+      <div className="absolute -bottom-6 -left-6 bg-white text-slate-900 px-6 py-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4 hidden sm:flex">
+        <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-6 h-6 text-accent" />
+        </div>
+        <div>
+          <div className="font-bold text-sm leading-tight">Без посредников</div>
+          <div className="text-xs text-slate-500 mt-0.5">Личная ответственность</div>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -123,39 +212,48 @@ const Hero = () => {
           className="w-full h-full object-cover opacity-40"
           referrerPolicy="no-referrer"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full text-center lg:text-left">
-        <div className="max-w-2xl mx-auto lg:mx-0">
-          <h1 className="text-5xl md:text-7xl text-white font-bold leading-tight mb-6">
-            Ремонт квартир <span className="italic font-serif text-accent">без посредников</span>
-          </h1>
-          <p className="text-lg text-white/80 mb-10 leading-relaxed">
-            Честные цены по рынку Екатеринбурга. От черновой отделки в новостройке до капитального ремонта вторички. Точная смета до начала работ.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <a href="/#calculator" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
-              Рассчитать стоимость
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="/#portfolio" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2">
-              Смотреть примеры
-            </a>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Левая часть */}
+          <div className="lg:col-span-7 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
+            <h1 className="text-5xl md:text-7xl text-white font-bold leading-tight mb-6">
+              Ремонт квартир <span className="italic font-serif text-accent">без посредников</span>
+            </h1>
+            <p className="text-lg text-white/80 mb-10 leading-relaxed">
+              Честные цены по рынку Екатеринбурга. От черновой отделки в новостройке до капитального ремонта вторички. Точная смета до начала работ.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <HashScrollLinkButton to="calculator" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
+                Рассчитать стоимость
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </HashScrollLinkButton>
+              <HashScrollLinkButton to="portfolio" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2">
+                Смотреть примеры
+              </HashScrollLinkButton>
+            </div>
+
+            <div className="mt-16 grid grid-cols-3 gap-8 border-t border-white/10 pt-8">
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">12</div>
+                <div className="text-xs text-white/60 uppercase tracking-wider">Лет в Екб</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">350+</div>
+                <div className="text-xs text-white/60 uppercase tracking-wider">Сданных квартир</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white mb-1">3 года</div>
+                <div className="text-xs text-white/60 uppercase tracking-wider">Гарантия по договору</div>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-16 grid grid-cols-3 gap-8 border-t border-white/10 pt-8">
-            <div>
-              <div className="text-3xl font-bold text-white mb-1">12</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Лет в Екб</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-1">350+</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Сданных квартир</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-1">3 года</div>
-              <div className="text-xs text-white/60 uppercase tracking-wider">Гарантия по договору</div>
-            </div>
+          {/* Правая часть */}
+          <div className="hidden lg:block lg:col-span-5 w-full">
+            <DirectorCard />
           </div>
         </div>
       </div>
@@ -751,10 +849,10 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-6">Навигация</h4>
             <ul className="space-y-4 text-sm text-white/50">
-              <li><a href="/#services" className="hover:text-accent transition-colors">Цены</a></li>
-              <li><a href="/#stages" className="hover:text-accent transition-colors">Этапы работ</a></li>
-              <li><a href="/#portfolio" className="hover:text-accent transition-colors">Портфолио</a></li>
-              <li><a href="/#calculator" className="hover:text-accent transition-colors">Калькулятор</a></li>
+              <li><HashScrollLinkButton to="services" className="hover:text-accent transition-colors">Цены</HashScrollLinkButton></li>
+              <li><HashScrollLinkButton to="stages" className="hover:text-accent transition-colors">Этапы работ</HashScrollLinkButton></li>
+              <li><HashScrollLinkButton to="portfolio" className="hover:text-accent transition-colors">Портфолио</HashScrollLinkButton></li>
+              <li><HashScrollLinkButton to="calculator" className="hover:text-accent transition-colors">Калькулятор</HashScrollLinkButton></li>
               <li><Link to="/blog" className="hover:text-accent transition-colors">Блог о ремонте</Link></li>
             </ul>
           </div>
