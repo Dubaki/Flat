@@ -34,11 +34,11 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, search]);
 
   return null;
 };
@@ -50,6 +50,7 @@ const HashScrollLinkButton: React.FC<{ to: string; className?: string; children:
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (location.pathname !== '/') {
+      window.scrollTo(0, 0); // Scroll to top before navigating
       navigate('/');
       setTimeout(() => {
         document.getElementById(to)?.scrollIntoView({ behavior: 'smooth' });
@@ -68,6 +69,11 @@ const HashScrollLinkButton: React.FC<{ to: string; className?: string; children:
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Header should be solid if we are not on the home page or if we have scrolled
+  const isSolid = isScrolled || location.pathname !== '/';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -84,14 +90,24 @@ const Navbar = () => {
     { name: 'Контакты', href: '/#contact' },
   ];
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/');
+      window.scrollTo(0, 0);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isSolid ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center w-full">
-        <a href="/#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center gap-2">
+        <a href="/" onClick={handleLogoClick} className="flex items-center gap-2">
           <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg">
             <Hammer className="text-white w-6 h-6" />
           </div>
-          <span className={`text-xl font-bold ${isScrolled ? 'text-primary' : 'text-white'}`}>
+          <span className={`text-xl font-bold ${isSolid ? 'text-primary' : 'text-white'}`}>
             Дядя <span className="text-accent">Фёдор</span>
           </span>
         </a>
@@ -103,7 +119,7 @@ const Navbar = () => {
               <HashScrollLinkButton 
                 key={link.name} 
                 to={link.href.substring(2)} 
-                className={`text-sm font-medium hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`}
+                className={`text-sm font-medium hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`}
               >
                 {link.name}
               </HashScrollLinkButton>
@@ -111,17 +127,17 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 to={link.href} 
-                className={`text-sm font-medium hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`}
+                className={`text-sm font-medium hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`}
               >
                 {link.name}
               </Link>
             )
           ))}
           <div className="flex items-center gap-4">
-            <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`} title="Позвонить">
+            <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Позвонить">
               <Phone className="w-5 h-5" />
             </a>
-            <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
+            <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
               <Send className="w-5 h-5" />
             </a>
           </div>
@@ -132,10 +148,10 @@ const Navbar = () => {
 
         {/* Mobile Nav Icons */}
         <div className="flex lg:hidden items-center gap-5">
-          <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`} title="Позвонить">
+          <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Позвонить">
             <Phone className="w-6 h-6" />
           </a>
-          <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isScrolled ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
+          <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
             <Send className="w-6 h-6" />
           </a>
         </div>
@@ -148,7 +164,7 @@ const Navbar = () => {
             <HashScrollLinkButton 
               key={link.name} 
               to={link.href.substring(2)} 
-              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isScrolled ? 'text-primary' : 'text-white/90'}`}
+              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isSolid ? 'text-primary' : 'text-white/90'}`}
             >
               {link.name}
             </HashScrollLinkButton>
@@ -156,7 +172,7 @@ const Navbar = () => {
             <Link 
               key={link.name} 
               to={link.href} 
-              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isScrolled ? 'text-primary' : 'text-white/90'}`}
+              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isSolid ? 'text-primary' : 'text-white/90'}`}
             >
               {link.name}
             </Link>
