@@ -33,6 +33,16 @@ import {
 
 import { useLocation, useNavigate } from 'react-router-dom';
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const HashScrollLinkButton: React.FC<{ to: string; className?: string; children: React.ReactNode }> = ({ to, className, children }) => {
   const navigate = useNavigate();
   const location = useLocation();
