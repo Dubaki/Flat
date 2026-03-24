@@ -1,0 +1,77 @@
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Calendar, User } from 'lucide-react';
+import { blogPosts } from '../lib/blogData';
+
+const Blog = () => {
+  return (
+    <div className="pt-24 min-h-screen bg-slate-50">
+      <Helmet>
+        <title>Блог о ремонте квартир | Советы, тренды, материалы | Дядя Фёдор</title>
+        <meta name="description" content="Полезные статьи о ремонте квартир, выборе материалов и дизайне интерьера от экспертов компании Дядя Фёдор в Екатеринбурге." />
+      </Helmet>
+
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="mb-8">
+          <Link to="/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2">
+            ← На главную
+          </Link>
+        </div>
+
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900">
+            Блог о ремонте
+          </h1>
+          <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Делимся опытом, рассказываем о подводных камнях ремонта и помогаем сделать ваш дом идеальным.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {blogPosts.map((post) => (
+            <article key={post.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+              <Link to={`/blog/${post.id}`} className="relative aspect-video overflow-hidden block">
+                <img 
+                  src={post.image} 
+                  alt={post.title} 
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-accent">
+                  {post.category}
+                </div>
+              </Link>
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex items-center gap-4 text-xs text-slate-400 mb-4">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {post.date}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <User className="w-3 h-3" />
+                    {post.author}
+                  </div>
+                </div>
+                <h2 className="text-xl font-bold mb-3 text-slate-900 leading-tight">
+                  <Link to={`/blog/${post.id}`} className="hover:text-accent transition-colors">
+                    {post.title}
+                  </Link>
+                </h2>
+                <p className="text-slate-600 text-sm mb-6 flex-grow">
+                  {post.excerpt}
+                </p>
+                <Link to={`/blog/${post.id}`} className="text-accent font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all mt-auto">
+                  Читать статью <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Blog;
