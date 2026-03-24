@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import CosmeticRepair from './pages/CosmeticRepair';
 import NewBuildingRepair from './pages/NewBuildingRepair';
@@ -822,7 +822,7 @@ const Home = () => (
 export default function App() {
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HashRouter>
         <div className="min-h-screen font-sans">
           <Navbar />
           <main>
@@ -836,7 +836,7 @@ export default function App() {
           </main>
           <Footer />
         </div>
-      </BrowserRouter>
+      </HashRouter>
     </HelmetProvider>
   );
 }
