@@ -65,7 +65,7 @@ const CallbackModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
           <X className="w-6 h-6" />
         </button>
 
-        <div className="p-8 lg:p-10">
+        <div className="p-6 md:p-8 lg:p-10">
           <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6">
             <Phone className="text-accent w-8 h-8" />
           </div>
@@ -104,12 +104,13 @@ const CallbackModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
   );
 };
 
-const HashScrollLinkButton: React.FC<{ to: string; className?: string; children: React.ReactNode }> = ({ to, className, children }) => {
+const HashScrollLinkButton: React.FC<{ to: string; className?: string; children: React.ReactNode; onClick?: () => void }> = ({ to, className, children, onClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (onClick) onClick();
     if (location.pathname !== '/') {
       window.scrollTo(0, 0); // Scroll to top before navigating
       navigate('/');
@@ -130,11 +131,12 @@ const HashScrollLinkButton: React.FC<{ to: string; className?: string; children:
 
 const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   
   // Header should be solid if we are not on the home page or if we have scrolled
-  const isSolid = isScrolled || location.pathname !== '/';
+  const isSolid = isScrolled || location.pathname !== '/' || isMobileMenuOpen;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -153,6 +155,7 @@ const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    setIsMobileMenuOpen(false);
     if (location.pathname !== '/') {
       navigate('/');
       window.scrollTo(0, 0);
@@ -164,11 +167,11 @@ const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isSolid ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center w-full">
-        <a href="/" onClick={handleLogoClick} className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg">
+        <a href="/" onClick={handleLogoClick} className="flex items-center gap-2 z-50 relative min-w-0">
+          <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg shrink-0">
             <Hammer className="text-white w-6 h-6" />
           </div>
-          <span className={`text-xl font-bold ${isSolid ? 'text-primary' : 'text-white'}`}>
+          <span className={`text-xl font-bold truncate ${isSolid ? 'text-primary' : 'text-white'}`}>
             Дядя <span className="text-accent">Фёдор</span>
           </span>
         </a>
@@ -210,39 +213,77 @@ const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
           </button>
         </div>
 
-        {/* Mobile Nav Icons */}
-        <div className="flex lg:hidden items-center gap-5">
-          <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Позвонить">
-            <Phone className="w-6 h-6" />
-          </a>
-          <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
-            <Send className="w-6 h-6" />
-          </a>
+        {/* Mobile Nav Toggle */}
+        <div className="flex lg:hidden items-center gap-4 z-50 relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`p-2 rounded-md ${isSolid ? 'text-primary' : 'text-white'}`}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Nav Links Row */}
-      <div className={`lg:hidden max-w-7xl mx-auto px-6 mt-4 flex overflow-x-auto gap-6 pb-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`}>
-        {navLinks.map((link) => (
-          link.href.startsWith('/#') ? (
-            <HashScrollLinkButton 
-              key={link.name} 
-              to={link.href.substring(2)} 
-              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isSolid ? 'text-primary' : 'text-white/90'}`}
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-full left-0 w-full bg-white shadow-xl lg:hidden flex flex-col py-4 px-6 border-t border-slate-100"
+          >
+            <div className="flex flex-col gap-4 mb-6">
+              {navLinks.map((link) => (
+                link.href.startsWith('/#') ? (
+                  <HashScrollLinkButton 
+                    key={link.name} 
+                    to={link.href.substring(2)} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-lg font-medium text-primary hover:text-accent transition-colors py-2"
+                  >
+                    {link.name}
+                  </HashScrollLinkButton>
+                ) : (
+                  <Link 
+                    key={link.name} 
+                    to={link.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-lg font-medium text-primary hover:text-accent transition-colors py-2"
+                  >
+                    {link.name}
+                  </Link>
+                )
+              ))}
+            </div>
+            
+            <div className="flex items-center gap-6 mb-6 pt-6 border-t border-slate-100">
+              <a href="tel:89221800911" className="flex items-center gap-3 text-primary hover:text-accent transition-colors">
+                <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <span className="font-medium">Позвонить</span>
+              </a>
+              <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-primary hover:text-accent transition-colors">
+                <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
+                  <Send className="w-5 h-5" />
+                </div>
+                <span className="font-medium">Telegram</span>
+              </a>
+            </div>
+            
+            <button 
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenModal();
+              }}
+              className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-lg shadow-accent/20"
             >
-              {link.name}
-            </HashScrollLinkButton>
-          ) : (
-            <Link 
-              key={link.name} 
-              to={link.href} 
-              className={`text-sm font-medium whitespace-nowrap hover:text-accent transition-colors snap-start ${isSolid ? 'text-primary' : 'text-white/90'}`}
-            >
-              {link.name}
-            </Link>
-          )
-        ))}
-      </div>
+              Заказать звонок
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
@@ -256,7 +297,7 @@ const DirectorCard = () => {
       <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-[2rem] shadow-2xl">
         <div className="relative overflow-hidden rounded-t-[1.75rem] rounded-b-xl aspect-[4/5] bg-slate-800">
           <img 
-            src={`${import.meta.env.BASE_URL}alex.png`}
+            src="/alex.jpg"
             alt="Александр - руководитель" 
             className="w-full h-full object-cover object-top"
           />
@@ -299,7 +340,7 @@ const Hero = () => {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Левая часть */}
           <div className="lg:col-span-7 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
-            <h1 className="text-5xl md:text-7xl text-white font-bold leading-tight mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
               Ремонт квартир <span className="italic font-serif text-accent">без посредников</span>
             </h1>
             <p className="text-lg text-white/80 mb-10 leading-relaxed">
@@ -315,7 +356,7 @@ const Hero = () => {
               </HashScrollLinkButton>
             </div>
 
-            <div className="mt-16 grid grid-cols-3 gap-8 border-t border-white/10 pt-8">
+            <div className="mt-12 lg:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 border-t border-white/10 pt-8">
               <div>
                 <div className="text-3xl font-bold text-white mb-1">12</div>
                 <div className="text-xs text-white/60 uppercase tracking-wider">Лет в Екб</div>
@@ -332,7 +373,7 @@ const Hero = () => {
           </div>
 
           {/* Правая часть */}
-          <div className="hidden lg:block lg:col-span-5 w-full">
+          <div className="lg:col-span-5 w-full mt-12 lg:mt-0">
             <DirectorCard />
           </div>
         </div>
@@ -400,7 +441,7 @@ const Services = () => {
               </p>
               <div className="pt-6 border-t border-slate-50 flex justify-between items-center mt-auto">
                 <div>
-                  <span className="text-accent font-bold text-lg">{service.price}</span>
+                  <span className="text-accent font-bold text-lg whitespace-nowrap">{service.price}</span>
                   <div className="text-xs text-slate-400 mt-1">только за работу</div>
                 </div>
                 {service.link && (
@@ -500,10 +541,12 @@ const Stages = () => {
           {stages.map((stage, idx) => (
             <div key={idx} className="relative pl-8 md:pl-0">
               {/* Mobile timeline line */}
-              <div className="absolute left-[11px] top-10 bottom-[-2rem] w-[2px] bg-slate-100 md:hidden last:hidden"></div>
+              {idx !== stages.length - 1 && (
+                <div className="absolute left-[11px] top-10 bottom-[-2rem] w-[2px] bg-slate-100 md:hidden"></div>
+              )}
               
-              <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 h-full relative z-10">
-                <div className="absolute -left-4 md:-left-4 top-8 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg md:hidden">
+              <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 h-full relative z-10">
+                <div className="absolute -left-4 md:-left-4 top-6 md:top-8 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg md:hidden">
                   {idx + 1}
                 </div>
                 
@@ -615,7 +658,7 @@ const BeforeAfterSlider: React.FC<{ project: any }> = ({ project }) => {
         <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
           <h4 className="text-white text-2xl font-bold mb-2">{project.title}</h4>
           <p className="text-slate-300 text-sm mb-3">{project.type}</p>
-          <div className="inline-block bg-accent text-white px-3 py-1 rounded-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+          <div className="inline-block whitespace-nowrap bg-accent text-white px-3 py-1 rounded-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
             {project.price}
           </div>
         </div>
@@ -659,7 +702,7 @@ const Portfolio = () => {
   return (
     <section id="portfolio" className="section-padding bg-slate-900 text-white w-full">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Реальные объекты в Екб</h2>
             <p className="text-slate-400 max-w-xl">
@@ -719,7 +762,7 @@ const InteractiveCalculator = () => {
 
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
           {/* Inputs */}
-          <div className="p-8 lg:p-12 lg:w-3/5 space-y-10">
+          <div className="p-6 md:p-8 lg:p-12 lg:w-3/5 space-y-8 lg:space-y-10">
             
             {/* Area Slider */}
             <div>
@@ -790,30 +833,30 @@ const InteractiveCalculator = () => {
           </div>
 
           {/* Results */}
-          <div className="bg-primary text-white p-8 lg:p-12 lg:w-2/5 flex flex-col justify-between relative overflow-hidden">
+          <div className="bg-primary text-white p-6 md:p-8 lg:p-12 lg:w-2/5 flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-8">Предварительный расчет</h3>
               
               <div className="space-y-6 mb-8">
-                <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <span className="text-white/70">Стоимость работ:</span>
-                  <span className="font-bold text-lg">{totalWorkCost.toLocaleString('ru-RU')} ₽</span>
+                <div className="flex justify-between items-center border-b border-white/10 pb-4 gap-4">
+                  <span className="text-white/70 min-w-0 break-words">Стоимость работ:</span>
+                  <span className="font-bold text-lg shrink-0 whitespace-nowrap">{totalWorkCost.toLocaleString('ru-RU')} ₽</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <span className="text-white/70">Черновые материалы:</span>
-                  <span className="font-bold text-lg">{roughMaterialsCost.toLocaleString('ru-RU')} ₽</span>
+                <div className="flex justify-between items-center border-b border-white/10 pb-4 gap-4">
+                  <span className="text-white/70 min-w-0 break-words">Черновые материалы:</span>
+                  <span className="font-bold text-lg shrink-0 whitespace-nowrap">{roughMaterialsCost.toLocaleString('ru-RU')} ₽</span>
                 </div>
-                <div className="flex justify-between items-center pb-4">
-                  <span className="text-white/70 text-sm">Чистовые материалы (обои, плитка, ламинат):</span>
-                  <span className="font-medium text-sm text-accent text-right">Покупаются отдельно<br/>под ваш вкус</span>
+                <div className="flex justify-between items-center pb-4 gap-4">
+                  <span className="text-white/70 text-sm min-w-0 break-words">Чистовые материалы (обои, плитка, ламинат):</span>
+                  <span className="font-medium text-sm text-accent text-right shrink-0">Покупаются отдельно<br/>под ваш вкус</span>
                 </div>
               </div>
 
               <div className="bg-white/10 rounded-2xl p-6 mb-8 backdrop-blur-sm border border-white/10">
                 <div className="text-sm text-white/70 mb-2">Итого (работа + черновые мат-лы):</div>
-                <div className="text-4xl font-bold text-accent">
+                <div className="text-3xl sm:text-4xl font-bold text-accent whitespace-nowrap">
                   ~ {totalEstimated.toLocaleString('ru-RU')} ₽
                 </div>
               </div>
@@ -833,7 +876,7 @@ const Contact = () => {
   return (
     <section id="contact" className="section-padding w-full flex justify-center">
       <div className="max-w-7xl mx-auto w-full">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-8">Свяжитесь с нами</h2>
             <p className="text-slate-600 mb-12 text-lg">
@@ -841,31 +884,31 @@ const Contact = () => {
             </p>
 
             <div className="space-y-8">
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center">
-                  <Phone className="text-accent w-6 h-6" />
+              <div className="flex items-start sm:items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
+                  <Phone className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <div>
-                  <div className="text-sm text-slate-400 uppercase tracking-wider font-bold">Телефон</div>
-                  <div className="text-xl font-bold">8-922-18-00-911</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center">
-                  <Send className="text-accent w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400 uppercase tracking-wider font-bold">Telegram</div>
-                  <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="text-xl font-bold hover:text-accent transition-colors">@tonmeplz</a>
+                <div className="min-w-0">
+                  <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Телефон</div>
+                  <div className="text-lg sm:text-xl font-bold break-words">8-922-18-00-911</div>
                 </div>
               </div>
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center">
-                  <Mail className="text-accent w-6 h-6" />
+              <div className="flex items-start sm:items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
+                  <Send className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <div>
-                  <div className="text-sm text-slate-400 uppercase tracking-wider font-bold">Email</div>
-                  <div className="text-xl font-bold">3536246@gmail.com</div>
+                <div className="min-w-0">
+                  <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Telegram</div>
+                  <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors break-words">@tonmeplz</a>
+                </div>
+              </div>
+              <div className="flex items-start sm:items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
+                  <Mail className="text-accent w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Email</div>
+                  <div className="text-lg sm:text-xl font-bold break-words">3536246@gmail.com</div>
                 </div>
               </div>
             </div>
@@ -920,11 +963,11 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-lg">
+            <div className="flex items-center gap-2 mb-6 min-w-0">
+              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-lg shrink-0">
                 <Hammer className="text-white w-5 h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tighter">
+              <span className="text-xl font-bold tracking-tighter truncate">
                 Дядя <span className="text-accent">Фёдор</span>
               </span>
             </div>
@@ -972,7 +1015,7 @@ const Footer = () => {
             <span>ИНН: 660000000000</span>
             <span>ОГРНИП: 300000000000000</span>
           </div>
-          <div className="flex gap-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
             <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
             <a href="#" className="hover:text-white transition-colors">Публичная оферта</a>
           </div>
@@ -1006,7 +1049,7 @@ export default function App() {
     <HelmetProvider>
       <HashRouter>
         <ScrollToTop />
-        <div className="min-h-screen font-sans w-full overflow-x-hidden">
+        <div className="min-h-screen font-sans w-full overflow-x-hidden break-words">
           <Navbar onOpenModal={() => setIsModalOpen(true)} />
           <main className="w-full">
             <Routes>

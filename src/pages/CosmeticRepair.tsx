@@ -27,14 +27,14 @@ const CosmeticRepair = () => {
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               Идеальное решение, когда нужно быстро и недорого освежить интерьер без капитальных вмешательств. Меняем обои, напольные покрытия, красим потолки и обновляем розетки.
             </p>
-            <div className="flex items-center gap-6 mb-8">
-              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Стоимость</div>
-                <div className="text-2xl font-bold text-accent">от 4 000 ₽/м²</div>
+                <div className="text-xl sm:text-2xl font-bold text-accent whitespace-nowrap">от 4 000 ₽/м²</div>
               </div>
-              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Сроки</div>
-                <div className="text-2xl font-bold text-slate-800">от 14 дней</div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-800">от 14 дней</div>
               </div>
             </div>
             <a href="/#calculator" className="inline-block bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">

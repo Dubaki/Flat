@@ -15,7 +15,7 @@
     @apply scroll-smooth;
   }
   body {
-    @apply font-sans text-primary bg-white overflow-x-hidden w-full;
+    @apply font-sans text-primary bg-white overflow-x-hidden w-full break-words;
   }
   
   h1, h2, h3, h4 {
