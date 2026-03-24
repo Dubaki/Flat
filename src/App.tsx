@@ -200,8 +200,8 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="section-padding bg-slate-50 w-full flex justify-center">
-      <div className="max-w-7xl mx-auto w-full">
+    <section id="services" className="section-padding bg-slate-50 w-full">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Цены на ремонт в Екатеринбурге</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -306,8 +306,8 @@ const Stages = () => {
   ];
 
   return (
-    <section id="stages" className="section-padding bg-white w-full flex justify-center">
-      <div className="max-w-7xl mx-auto w-full">
+    <section id="stages" className="section-padding bg-white w-full">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Детальная разбивка работ</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -477,8 +477,8 @@ const Portfolio = () => {
   ];
 
   return (
-    <section id="portfolio" className="section-padding bg-slate-900 text-white w-full flex justify-center">
-      <div className="max-w-7xl mx-auto w-full">
+    <section id="portfolio" className="section-padding bg-slate-900 text-white w-full">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Реальные объекты в Екб</h2>
@@ -527,8 +527,8 @@ const InteractiveCalculator = () => {
   const totalEstimated = totalWorkCost + roughMaterialsCost;
 
   return (
-    <section id="calculator" className="section-padding bg-slate-50 w-full flex justify-center">
-      <div className="max-w-7xl mx-auto w-full">
+    <section id="calculator" className="section-padding bg-slate-50 w-full">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Калькулятор ремонта</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
