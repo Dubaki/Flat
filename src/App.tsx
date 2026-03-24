@@ -51,7 +51,7 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center w-full">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg">
             <Hammer className="text-white w-6 h-6" />
@@ -114,19 +114,19 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-28 pb-12">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-28 pb-12 w-full">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 w-full h-full">
         <img 
           src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=1920" 
           alt="Modern interior" 
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 w-full h-full" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full flex justify-center text-center lg:justify-start lg:text-left">
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -200,8 +200,8 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="section-padding bg-slate-50">
-      <div className="max-w-7xl mx-auto">
+    <section id="services" className="section-padding bg-slate-50 w-full">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Цены на ремонт в Екатеринбурге</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -306,8 +306,8 @@ const Stages = () => {
   ];
 
   return (
-    <section id="stages" className="section-padding bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="stages" className="section-padding bg-white w-full">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Детальная разбивка работ</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -477,8 +477,8 @@ const Portfolio = () => {
   ];
 
   return (
-    <section id="portfolio" className="section-padding bg-slate-900 text-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="portfolio" className="section-padding bg-slate-900 text-white w-full">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Реальные объекты в Екб</h2>
@@ -527,8 +527,8 @@ const InteractiveCalculator = () => {
   const totalEstimated = totalWorkCost + roughMaterialsCost;
 
   return (
-    <section id="calculator" className="section-padding bg-slate-50">
-      <div className="max-w-7xl mx-auto">
+    <section id="calculator" className="section-padding bg-slate-50 w-full">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Калькулятор ремонта</h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -651,8 +651,8 @@ const InteractiveCalculator = () => {
 
 const Contact = () => {
   return (
-    <section id="contact" className="section-padding">
-      <div className="max-w-7xl mx-auto">
+    <section id="contact" className="section-padding w-full">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-8">Свяжитесь с нами</h2>

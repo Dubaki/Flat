@@ -11,8 +11,11 @@
 }
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
   body {
-    @apply font-sans text-primary bg-white;
+    @apply font-sans text-primary bg-white overflow-x-hidden w-full;
   }
   
   h1, h2, h3, h4 {
