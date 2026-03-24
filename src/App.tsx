@@ -77,14 +77,14 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center w-full">
-        <Link to="/" className="flex items-center gap-2">
+        <a href="/#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center gap-2">
           <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg">
             <Hammer className="text-white w-6 h-6" />
           </div>
           <span className={`text-xl font-bold ${isScrolled ? 'text-primary' : 'text-white'}`}>
             Дядя <span className="text-accent">Фёдор</span>
           </span>
-        </Link>
+        </a>
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6 lg:gap-8">
@@ -166,7 +166,7 @@ const DirectorCard = () => {
       <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-[2rem] shadow-2xl">
         <div className="relative overflow-hidden rounded-t-[1.75rem] rounded-b-xl aspect-[4/5] bg-slate-800">
           <img 
-            src="/alex.png" 
+            src={`${import.meta.env.BASE_URL}alex.png`}
             alt="Александр - руководитель" 
             className="w-full h-full object-cover object-top"
           />
@@ -182,7 +182,7 @@ const DirectorCard = () => {
           <p className="text-accent text-sm font-semibold mb-4">Руководитель компании</p>
           <div className="h-px w-full bg-white/10 mb-4"></div>
           <p className="text-sm text-white/80 leading-relaxed italic">
-            «Я лично контролирую каждый объект. Мы работаем прозрачно, не занижаем сметы для заманивания и отвечаем за качество по договору.»
+            «Я лично контролирую каждый объект. Мы работаем прозрачно, не занижаем сметы для заманивания и отвечаем за качество.»
           </p>
         </div>
       </div>
@@ -274,13 +274,15 @@ const Services = () => {
       title: 'Капитальный ремонт',
       description: 'Полный демонтаж, выравнивание стен по маякам, новая стяжка, замена электрики и труб.',
       icon: Hammer,
-      price: 'от 9 000 ₽/м²'
+      price: 'от 9 000 ₽/м²',
+      link: 'contact'
     },
     {
       title: 'Ремонт по дизайн-проекту',
       description: 'Реализация сложных архитектурных решений, теневые профили, крупноформатный керамогранит.',
       icon: Layout,
-      price: 'от 14 000 ₽/м²'
+      price: 'от 14 000 ₽/м²',
+      link: 'contact'
     },
     {
       title: 'Черновая отделка (White Box)',
@@ -322,9 +324,15 @@ const Services = () => {
                   <div className="text-xs text-slate-400 mt-1">только за работу</div>
                 </div>
                 {service.link && (
-                  <Link to={service.link} className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center gap-2">
-                    Подробнее <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  service.link.startsWith('/') ? (
+                    <Link to={service.link} className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center gap-2">
+                      Подробнее <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  ) : (
+                    <HashScrollLinkButton to={service.link} className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center gap-2">
+                      Подробнее <ArrowRight className="w-4 h-4" />
+                    </HashScrollLinkButton>
+                  )
                 )}
               </div>
             </motion.div>
