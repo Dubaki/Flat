@@ -923,6 +923,7 @@ export default function App() {
   return (
     <HelmetProvider>
       <HashRouter>
+        <ScrollToTop />
         <div className="min-h-screen font-sans w-full overflow-x-hidden">
           <Navbar />
           <main className="w-full">
