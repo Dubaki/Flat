@@ -187,16 +187,6 @@ const DirectorCard = () => {
         </div>
       </div>
 
-      {/* Карточка доверия */}
-      <div className="absolute -bottom-6 -left-6 bg-white text-slate-900 px-6 py-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4 hidden sm:flex">
-        <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
-          <ShieldCheck className="w-6 h-6 text-accent" />
-        </div>
-        <div>
-          <div className="font-bold text-sm leading-tight">Без посредников</div>
-          <div className="text-xs text-slate-500 mt-0.5">Личная ответственность</div>
-        </div>
-      </div>
     </div>
   );
 };
