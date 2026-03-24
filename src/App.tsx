@@ -114,32 +114,26 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-12 w-full">
+    <section className="relative min-h-screen flex items-center pt-28 pb-12 w-full bg-slate-900">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0 w-full h-full">
+      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <img 
           src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=1920" 
           alt="Modern interior" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-40"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-black/60 w-full h-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 w-full flex justify-center text-center lg:justify-start lg:text-left">
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-2xl"
-        >
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full text-center lg:text-left">
+        <div className="max-w-2xl mx-auto lg:mx-0">
           <h1 className="text-5xl md:text-7xl text-white font-bold leading-tight mb-6">
             Ремонт квартир <span className="italic font-serif text-accent">без посредников</span>
           </h1>
           <p className="text-lg text-white/80 mb-10 leading-relaxed">
             Честные цены по рынку Екатеринбурга. От черновой отделки в новостройке до капитального ремонта вторички. Точная смета до начала работ.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <a href="/#calculator" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
               Рассчитать стоимость
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -163,7 +157,7 @@ const Hero = () => {
               <div className="text-xs text-white/60 uppercase tracking-wider">Гарантия по договору</div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
