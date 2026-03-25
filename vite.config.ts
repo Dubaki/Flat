@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({mode, command}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: command === 'build' ? '/Flat/' : '/',
+    base: command === 'build' ? './' : '/',
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),

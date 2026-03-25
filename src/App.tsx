@@ -297,7 +297,7 @@ const DirectorCard = () => {
       <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-[2rem] shadow-2xl">
         <div className="relative overflow-hidden rounded-t-[1.75rem] rounded-b-xl aspect-[4/5] bg-slate-800">
           <img 
-            src="/alex.jpg"
+            src={`${import.meta.env.BASE_URL}alex.png`}
             alt="Александр - руководитель" 
             className="w-full h-full object-cover object-top"
           />
