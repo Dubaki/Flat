@@ -465,63 +465,62 @@ const Services = () => {
 };
 
 const Stages = () => {
-  const stages = [
     {
       title: 'Демонтаж и перегородки',
       icon: Hammer,
       items: [
-        'Снос старых конструкций (от 350 ₽/м²)', 
-        'Вывоз мусора (от 4500 ₽/рейс)', 
-        'Возведение новых стен (от 900 ₽/м²)'
+        { name: 'Снос старых конструкций', price: 'от 350 ₽/м²' },
+        { name: 'Вывоз мусора', price: 'от 4500 ₽/рейс' },
+        { name: 'Возведение новых стен', price: 'от 900 ₽/м²' }
       ]
     },
     {
       title: 'Инженерные сети',
       icon: Zap,
       items: [
-        'Штробление стен (от 300 ₽/п.м.)', 
-        'Прокладка электрокабеля (от 100 ₽/п.м.)', 
-        'Разводка труб (от 3000 ₽/точка)', 
-        'Сборка электрощита (от 5000 ₽)'
+        { name: 'Штробление стен', price: 'от 300 ₽/п.м.' },
+        { name: 'Прокладка электрокабеля', price: 'от 100 ₽/п.м.' },
+        { name: 'Разводка труб', price: 'от 3000 ₽/точка' },
+        { name: 'Сборка электрощита', price: 'от 5000 ₽' }
       ]
     },
     {
       title: 'Черновая отделка',
       icon: Ruler,
       items: [
-        'Штукатурка стен по маякам (от 500 ₽/м²)', 
-        'Заливка стяжки пола (от 600 ₽/м²)', 
-        'Монтаж теплого пола (от 700 ₽/м²)', 
-        'Шумоизоляция (от 800 ₽/м²)'
+        { name: 'Штукатурка стен по маякам', price: 'от 500 ₽/м²' },
+        { name: 'Заливка стяжки пола', price: 'от 600 ₽/м²' },
+        { name: 'Монтаж теплого пола', price: 'от 700 ₽/м²' },
+        { name: 'Шумоизоляция', price: 'от 800 ₽/м²' }
       ]
     },
     {
       title: 'Предчистовая (White Box)',
       icon: Droplets,
       items: [
-        'Шпаклевка стен под обои (от 400 ₽/м²)', 
-        'Монтаж гипсокартона (от 800 ₽/м²)', 
-        'Установка подоконников (от 1500 ₽/шт)'
+        { name: 'Шпаклевка стен под обои', price: 'от 400 ₽/м²' },
+        { name: 'Монтаж гипсокартона', price: 'от 800 ₽/м²' },
+        { name: 'Установка подоконников', price: 'от 1500 ₽/шт' }
       ]
     },
     {
       title: 'Чистовая отделка',
       icon: Paintbrush,
       items: [
-        'Укладка керамогранита (от 1200 ₽/м²)', 
-        'Настил ламината (от 400 ₽/м²)', 
-        'Поклейка обоев (от 300 ₽/м²)', 
-        'Натяжные потолки (от 600 ₽/м²)'
+        { name: 'Укладка керамогранита', price: 'от 1200 ₽/м²' },
+        { name: 'Настил ламината', price: 'от 400 ₽/м²' },
+        { name: 'Поклейка обоев', price: 'от 300 ₽/м²' },
+        { name: 'Натяжные потолки', price: 'от 600 ₽/м²' }
       ]
     },
     {
       title: 'Завершение',
       icon: Sofa,
       items: [
-        'Установка розеток (от 300 ₽/шт)', 
-        'Монтаж санфаянса (от 2000 ₽/шт)', 
-        'Установка плинтусов (от 200 ₽/п.м.)', 
-        'Финальная уборка (бесплатно)'
+        { name: 'Установка розеток', price: 'от 300 ₽/шт' },
+        { name: 'Монтаж санфаянса', price: 'от 2000 ₽/шт' },
+        { name: 'Установка плинтусов', price: 'от 200 ₽/п.м.' },
+        { name: 'Финальная уборка', price: 'бесплатно' }
       ]
     }
   ];
@@ -560,11 +559,14 @@ const Stages = () => {
                   <h3 className="font-bold text-lg leading-tight">{stage.title}</h3>
                 </div>
                 
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   {stage.items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent/50 mt-1.5 shrink-0"></div>
-                      <span>{item}</span>
+                    <li key={i} className="flex items-start justify-between gap-2 text-sm">
+                      <div className="flex items-start gap-2 text-slate-600">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent/50 mt-1.5 shrink-0"></div>
+                        <span>{item.name}</span>
+                      </div>
+                      <span className="font-bold text-primary shrink-0 whitespace-nowrap">{item.price}</span>
                     </li>
                   ))}
                 </ul>
@@ -670,32 +672,32 @@ const BeforeAfterSlider: React.FC<{ project: any }> = ({ project }) => {
 const Portfolio = () => {
   const projects = [
     {
-      title: 'ЖК "Клевер Парк"',
-      type: 'Новостройка, Капитальный ремонт, 65 м²',
-      price: 'Работа: 650 000 ₽',
-      beforeImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=800',
-      afterImage: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&q=80&w=800'
+      title: 'Капитальный ремонт санузла',
+      type: 'Полный цикл: от демонтажа до установки сантехники',
+      price: 'Работа: 180 000 ₽',
+      beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before4.jpg`,
+      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after2.jpg`
     },
     {
-      title: 'Академический район',
-      type: 'Евротрешка, Ремонт от застройщика -> Комфорт, 80 м²',
-      price: 'Работа: 720 000 ₽',
-      beforeImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800',
-      afterImage: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&q=80&w=800'
+      title: 'Инженерные сети и отделка',
+      type: 'Разводка коммуникаций и облицовка плиткой',
+      price: 'Работа: 120 000 ₽',
+      beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before2.jpg`,
+      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after3.jpg`
     },
     {
-      title: 'Вторичка на Уралмаше',
-      type: 'Хрущевка, Полный демонтаж и капремонт, 45 м²',
-      price: 'Работа: 540 000 ₽',
-      beforeImage: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&q=80&w=800',
-      afterImage: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800'
+      title: 'Теплый пол и керамогранит',
+      type: 'Монтаж системы отопления и финишное покрытие',
+      price: 'Работа: 95 000 ₽',
+      beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before3.jpg`,
+      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after5.jpg`
     },
     {
-      title: 'ЖК "Макаровский"',
-      type: 'Дизайнерский ремонт, 110 м²',
-      price: 'Работа: 1 650 000 ₽',
-      beforeImage: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=800',
-      afterImage: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800'
+      title: 'Подготовка и финишная отделка',
+      type: 'Штукатурка и монтаж санфаянса',
+      price: 'Работа: 140 000 ₽',
+      beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before1.jpg`,
+      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after4.jpg`
     }
   ];
 
