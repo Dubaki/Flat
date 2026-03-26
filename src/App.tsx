@@ -201,7 +201,7 @@ const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
             <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Позвонить">
               <Phone className="w-5 h-5" />
             </a>
-            <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
+            <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-primary' : 'text-white'}`} title="Написать в Telegram">
               <Send className="w-5 h-5" />
             </a>
           </div>
@@ -264,7 +264,7 @@ const Navbar: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
                 </div>
                 <span className="font-medium">Позвонить</span>
               </a>
-              <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-primary hover:text-accent transition-colors">
+              <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-primary hover:text-accent transition-colors">
                 <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
                   <Send className="w-5 h-5" />
                 </div>
@@ -439,18 +439,18 @@ const Services = () => {
               <p className="text-slate-500 text-sm mb-6 flex-grow leading-relaxed">
                 {service.description}
               </p>
-              <div className="pt-6 border-t border-slate-50 flex justify-between items-center mt-auto">
+              <div className="pt-6 border-t border-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-auto">
                 <div>
                   <span className="text-accent font-bold text-lg whitespace-nowrap">{service.price}</span>
                   <div className="text-xs text-slate-400 mt-1">только за работу</div>
                 </div>
                 {service.link && (
                   service.link.startsWith('/') ? (
-                    <Link to={service.link} className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center gap-2">
+                    <Link to={service.link} className="w-full sm:w-auto bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center justify-center gap-2">
                       Подробнее <ArrowRight className="w-4 h-4" />
                     </Link>
                   ) : (
-                    <HashScrollLinkButton to={service.link} className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center gap-2">
+                    <HashScrollLinkButton to={service.link} className="w-full sm:w-auto bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center justify-center gap-2">
                       Подробнее <ArrowRight className="w-4 h-4" />
                     </HashScrollLinkButton>
                   )
@@ -1035,7 +1035,7 @@ const Footer = () => {
             <h4 className="font-bold mb-6">Контакты</h4>
             <ul className="space-y-4 text-sm text-white/50">
               <li><a href="tel:89221800911" className="hover:text-white transition-colors">8-922-18-00-911</a></li>
-              <li><a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram: @tonmeplz</a></li>
+              <li><a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram: @Mebabanza</a></li>
               <li><a href="mailto:3536246@gmail.com" className="hover:text-white transition-colors">3536246@gmail.com</a></li>
               <li>Пн-Вс: 09:00 - 20:00</li>
             </ul>
@@ -1045,8 +1045,7 @@ const Footer = () => {
         <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-white/30">
           <p>© {new Date().getFullYear()} Дядя Фёдор. Все права защищены.</p>
           <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-center">
-            <span>ИНН: 660000000000</span>
-            <span>ОГРНИП: 300000000000000</span>
+            {/* Юридические данные будут добавлены позже */}
           </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
             <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
