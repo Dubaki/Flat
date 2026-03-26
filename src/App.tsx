@@ -439,8 +439,8 @@ const Services = () => {
               <p className="text-slate-500 text-sm mb-6 flex-grow leading-relaxed">
                 {service.description}
               </p>
-              <div className="pt-6 border-t border-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-auto">
-                <div>
+              <div className="pt-6 border-t border-slate-50 flex flex-wrap items-center gap-4 mt-auto">
+                <div className="flex-grow min-w-0">
                   <span className="text-accent font-bold text-lg whitespace-nowrap">{service.price}</span>
                   <div className="text-xs text-slate-400 mt-1">только за работу</div>
                 </div>
@@ -932,7 +932,7 @@ const Contact = () => {
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Telegram</div>
-                  <a href="https://t.me/tonmeplz" target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors break-words">@tonmeplz</a>
+                  <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors break-words">@Mebabanza</a>
                 </div>
               </div>
               <div className="flex items-start sm:items-center gap-4 sm:gap-6">
