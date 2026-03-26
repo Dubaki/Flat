@@ -465,6 +465,7 @@ const Services = () => {
 };
 
 const Stages = () => {
+  const stages = [
     {
       title: 'Демонтаж и перегородки',
       icon: Hammer,
@@ -574,6 +575,36 @@ const Stages = () => {
             </div>
           ))}
         </div>
+
+        {/* Price Factors Note */}
+        <div className="mt-16 bg-slate-50 rounded-3xl p-8 border border-slate-100">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
+              <Star className="text-accent w-8 h-8" />
+            </div>
+            <div>
+              <h4 className="text-xl font-bold mb-3">От чего зависит итоговая стоимость?</h4>
+              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                Указанные цены являются базовыми за работу. Итоговая стоимость ремонта рассчитывается индивидуально и может меняться в зависимости от нескольких факторов:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+                {[
+                  'Общий объем работ (на больших площадях цена за м² ниже)',
+                  'Сложность геометрии (эркеры, ниши, многоуровневые конструкции)',
+                  'Состояние стен и пола (перепады, требующие доп. выравнивания)',
+                  'Выбранные чистовые материалы (крупный формат плитки и т.д.)',
+                  'Удаленность объекта от Екатеринбурга',
+                  'Срочность выполнения работ'
+                ].map((factor, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                    <span>{factor}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -676,28 +707,28 @@ const Portfolio = () => {
       type: 'Полный цикл: от демонтажа до установки сантехники',
       price: 'Работа: 180 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before4.jpg`,
-      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after2.jpg`
+      afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after2.jpg`
     },
     {
       title: 'Инженерные сети и отделка',
       type: 'Разводка коммуникаций и облицовка плиткой',
       price: 'Работа: 120 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before2.jpg`,
-      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after3.jpg`
+      afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after3.jpg`
     },
     {
       title: 'Теплый пол и керамогранит',
       type: 'Монтаж системы отопления и финишное покрытие',
       price: 'Работа: 95 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before3.jpg`,
-      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after5.jpg`
+      afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after5.jpg`
     },
     {
       title: 'Подготовка и финишная отделка',
       type: 'Штукатурка и монтаж санфаянса',
       price: 'Работа: 140 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before1.jpg`,
-      afterImage: `${import.env.BASE_URL || import.meta.env.BASE_URL}assets/projects/real1/after4.jpg`
+      afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after4.jpg`
     }
   ];
 
