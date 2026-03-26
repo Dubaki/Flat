@@ -12,10 +12,14 @@
 
 @layer base {
   html {
-    @apply scroll-smooth;
+    @apply scroll-smooth antialiased overflow-x-hidden;
+    -webkit-tap-highlight-color: transparent;
   }
+  
   body {
-    @apply font-sans text-primary bg-white overflow-x-hidden w-full break-words;
+    @apply font-sans text-primary bg-white overflow-x-hidden w-full break-words selection:bg-accent/20;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   h1, h2, h3, h4 {
@@ -28,5 +32,11 @@
 }
 
 .section-padding {
-  @apply py-12 px-4 md:py-20 md:px-12 lg:px-24;
+  @apply py-12 px-4 md:py-24 lg:py-32;
+}
+
+@layer utilities {
+  button, a {
+    touch-action: manipulation;
+  }
 }
