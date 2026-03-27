@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "tsx server.ts",
     "prebuild": "node scripts/generate-blog-index.js",
+    "postbuild": "echo. > dist/.nojekyll",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -t -d dist",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
