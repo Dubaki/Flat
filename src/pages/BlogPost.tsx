@@ -24,13 +24,30 @@ const BlogPost = () => {
     const fetchPost = async () => {
       if (!slug) return;
       try {
-        const response = await fetch(`/api/posts/${slug}`);
-        if (!response.ok) {
-          if (response.status === 404) throw new Error('Post not found');
-          throw new Error('Failed to fetch post');
+        // 1. Fetch metadata from index
+        const indexResponse = await fetch('./blog-index.json');
+        if (!indexResponse.ok) throw new Error('Failed to load blog index');
+        const indexData = await indexResponse.json();
+        const meta = indexData.find((p: any) => p.id === slug);
+        
+        if (!meta) throw new Error('Post not found');
+
+        // 2. Fetch the actual markdown content
+        const contentResponse = await fetch(`./posts/${decodeURIComponent(slug)}.md`);
+        if (!contentResponse.ok) throw new Error('Failed to load post content');
+        const rawContent = await contentResponse.text();
+
+        // 3. Strip frontmatter
+        let content = rawContent;
+        if (rawContent.startsWith('---')) {
+          const parts = rawContent.split(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+          if (parts.length > 1) content = parts[1];
         }
-        const data = await response.json();
-        setPost(data);
+
+        setPost({
+          ...meta,
+          content
+        });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {

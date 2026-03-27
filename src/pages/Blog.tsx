@@ -21,7 +21,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/posts');
+        const response = await fetch('./blog-index.json');
         if (!response.ok) throw new Error('Failed to fetch posts');
         const data = await response.json();
         setPosts(data);

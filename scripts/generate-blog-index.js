@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const postsDir = path.join(process.cwd(), 'posts', 'public');
+const postsDir = path.join(process.cwd(), 'public', 'posts');
 const outputDir = path.join(process.cwd(), 'public');
 const outputFile = path.join(outputDir, 'blog-index.json');
 
@@ -10,7 +10,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 if (!fs.existsSync(postsDir)) {
-  console.log('Posts directory not found, creating empty index.');
+  console.log(`Posts directory not found at ${postsDir}, creating empty index.`);
   fs.writeFileSync(outputFile, JSON.stringify([]));
   process.exit(0);
 }
@@ -53,7 +53,8 @@ try {
     const baseName = filename.replace('.md', '');
     for (const ext of possibleImages) {
       if (files.includes(baseName + ext)) {
-        image = `./posts/public/${encodeURIComponent(baseName + ext)}`;
+        // Link relative to the public root
+        image = `./posts/${encodeURIComponent(baseName + ext)}`;
         break;
       }
     }

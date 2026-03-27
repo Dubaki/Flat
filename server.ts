@@ -8,7 +8,7 @@ async function startServer() {
   const PORT = 3001;
 
   // Serve posts folder statically
-  app.use('/posts', express.static(path.join(process.cwd(), 'posts')));
+  app.use('/posts', express.static(path.join(process.cwd(), 'public', 'posts')));
 
   // API routes FIRST
   app.get("/api/health", (req, res) => {
@@ -16,7 +16,7 @@ async function startServer() {
   });
 
   app.get("/api/posts", (req, res) => {
-    const postsDir = path.join(process.cwd(), "posts", "public");
+    const postsDir = path.join(process.cwd(), "public", "posts");
     if (!fs.existsSync(postsDir)) {
       return res.json([]);
     }
@@ -90,7 +90,7 @@ async function startServer() {
 
   app.get("/api/posts/:id", (req, res) => {
     const filename = decodeURIComponent(req.params.id);
-    const postsDir = path.join(process.cwd(), "posts", "public");
+    const postsDir = path.join(process.cwd(), "public", "posts");
     const filePath = path.join(postsDir, `${filename}.md`);
     
     if (!fs.existsSync(filePath)) {
@@ -127,7 +127,7 @@ async function startServer() {
       let image = "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=1000";
       for (const ext of possibleImages) {
         if (files.includes(filename + ext)) {
-          image = `/posts/public/${encodeURIComponent(filename + ext)}`;
+          image = `./posts/${encodeURIComponent(filename + ext)}`;
           break;
         }
       }
