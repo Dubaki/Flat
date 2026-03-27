@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
+    "prebuild": "node scripts/generate-blog-index.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "build": "vite build",
