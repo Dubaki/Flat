@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface BlogPostData {
   id: string;
@@ -24,7 +26,6 @@ const BlogPost = () => {
     const fetchPost = async () => {
       if (!slug) return;
       try {
-        // 1. Fetch metadata from index
         const indexResponse = await fetch('./blog-index.json');
         if (!indexResponse.ok) throw new Error('Failed to load blog index');
         const indexData = await indexResponse.json();
@@ -32,12 +33,10 @@ const BlogPost = () => {
         
         if (!meta) throw new Error('Post not found');
 
-        // 2. Fetch the actual markdown content
         const contentResponse = await fetch(`./posts/${decodeURIComponent(slug)}.md`);
         if (!contentResponse.ok) throw new Error('Failed to load post content');
         const rawContent = await contentResponse.text();
 
-        // 3. Strip frontmatter
         let content = rawContent;
         if (rawContent.startsWith('---')) {
           const parts = rawContent.split(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
@@ -115,26 +114,14 @@ const BlogPost = () => {
         </div>
 
         {/* Article Content */}
-        <div 
-          className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-accent hover:prose-a:text-accent/80 prose-img:rounded-2xl"
-        >
-          {post.content.split('\n\n').map((paragraph, index) => {
-            if (paragraph.startsWith('## ')) {
-              return <h2 key={index} className="text-2xl mt-8 mb-4 font-bold text-slate-900">{paragraph.replace('## ', '').trim()}</h2>;
-            }
-            if (paragraph.startsWith('### ')) {
-              return <h3 key={index} className="text-xl mt-6 mb-3 font-bold text-slate-900">{paragraph.replace('### ', '').trim()}</h3>;
-            }
-            if (paragraph.startsWith('*') || paragraph.startsWith('-')) {
-              const items = paragraph.split('\n').map(item => item.replace(/^[\*\-]\s+/, '').trim());
-              return (
-                <ul key={index} className="list-disc pl-6 mb-6 space-y-2">
-                  {items.map((item, i) => <li key={i}>{item}</li>)}
-                </ul>
-              );
-            }
-            return <p key={index} className="mb-6 leading-relaxed text-slate-700">{paragraph.trim()}</p>;
-          })}
+        <div className="prose prose-lg prose-slate max-w-none 
+          prose-headings:font-bold prose-headings:text-slate-900 
+          prose-a:text-accent hover:prose-a:text-accent/80 
+          prose-img:rounded-2xl prose-blockquote:border-accent 
+          prose-blockquote:bg-accent/5 prose-blockquote:py-1 prose-blockquote:px-6 prose-blockquote:rounded-r-xl">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.content}
+          </ReactMarkdown>
         </div>
       </article>
     </div>
