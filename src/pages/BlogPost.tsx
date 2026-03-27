@@ -1,14 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { Calendar, User, ArrowLeft } from 'lucide-react';
-import { blogPosts } from '../lib/blogData';
+import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
+
+interface BlogPostData {
+  id: string;
+  title: string;
+  content: string;
+  image: string;
+  category: string;
+  date: string;
+  author: string;
+  metaDescription: string;
+}
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = blogPosts.find(p => p.id === slug);
+  const [post, setPost] = useState<BlogPostData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!post) {
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!slug) return;
+      try {
+        const response = await fetch(`/api/posts/${slug}`);
+        if (!response.ok) {
+          if (response.status === 404) throw new Error('Post not found');
+          throw new Error('Failed to fetch post');
+        }
+        const data = await response.json();
+        setPost(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="pt-24 min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-10 h-10 text-accent animate-spin mb-4" />
+        <p className="text-slate-500">Загрузка статьи...</p>
+      </div>
+    );
+  }
+
+  if (error || !post) {
     return <Navigate to="/blog" replace />;
   }
 
@@ -46,7 +88,7 @@ const BlogPost = () => {
           </div>
         </div>
 
-        <div className="rounded-3xl overflow-hidden aspect-video mb-12 shadow-xl">
+        <div className="rounded-3xl overflow-hidden aspect-video mb-12 shadow-xl bg-slate-200">
           <img 
             src={post.image} 
             alt={post.title} 
@@ -59,11 +101,22 @@ const BlogPost = () => {
         <div 
           className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-accent hover:prose-a:text-accent/80 prose-img:rounded-2xl"
         >
-          {post.content.split('\\n\\n').map((paragraph, index) => {
+          {post.content.split('\n\n').map((paragraph, index) => {
             if (paragraph.startsWith('## ')) {
-              return <h2 key={index} className="text-2xl mt-8 mb-4">{paragraph.replace('## ', '')}</h2>;
+              return <h2 key={index} className="text-2xl mt-8 mb-4 font-bold text-slate-900">{paragraph.replace('## ', '').trim()}</h2>;
             }
-            return <p key={index} className="mb-6">{paragraph}</p>;
+            if (paragraph.startsWith('### ')) {
+              return <h3 key={index} className="text-xl mt-6 mb-3 font-bold text-slate-900">{paragraph.replace('### ', '').trim()}</h3>;
+            }
+            if (paragraph.startsWith('*') || paragraph.startsWith('-')) {
+              const items = paragraph.split('\n').map(item => item.replace(/^[\*\-]\s+/, '').trim());
+              return (
+                <ul key={index} className="list-disc pl-6 mb-6 space-y-2">
+                  {items.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              );
+            }
+            return <p key={index} className="mb-6 leading-relaxed text-slate-700">{paragraph.trim()}</p>;
           })}
         </div>
       </article>
