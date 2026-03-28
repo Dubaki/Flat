@@ -11,57 +11,60 @@ const sortedPosts = posts.sort((a, b) => new Date(b.data.date).getTime() - new D
   title="Блог о ремонте квартир в Екатеринбурге | Советы и кейсы | Дядя Фёдор"
   description="Полезные статьи о ремонте в новостройках и вторичном жилье. Как сэкономить, как принять скрытые работы и как выбрать материалы."
 >
-  <div className="pt-32 pb-20 bg-slate-50 min-h-screen">
-    <div className="max-w-7xl mx-auto px-6">
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900">Блог о ремонте</h1>
-        <div className="w-24 h-1.5 bg-accent mx-auto mb-8 rounded-full"></div>
-        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+  <div class="pt-32 pb-20 bg-slate-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 text-slate-900 font-serif">Блог о ремонте</h1>
+        <div class="w-24 h-1.5 bg-accent mx-auto mb-8 rounded-full"></div>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">
           Делимся инженерным опытом, реальными сметами и секретами качественной отделки в Екатеринбурге.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {sortedPosts.map((post) => (
-          <a 
-            href={`/Flat/blog/${post.id}`} 
-            className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col h-full"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden">
-              <img 
-                src={`/Flat/posts/${post.id}.png`} 
-                alt={post.data.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            
-            <div className="p-8 flex flex-col flex-grow">
-              <div className="flex items-center gap-4 text-xs text-slate-400 mb-4 font-bold uppercase tracking-widest">
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-accent" />
-                  {post.data.date}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-accent" />
-                  {post.data.author}
-                </span>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedPosts.map((post) => {
+          const cleanId = post.id.replace(/\.md$/, '');
+          return (
+            <a 
+              href={`/Flat/blog/${cleanId}`} 
+              class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col h-full"
+            >
+              <div class="relative aspect-[16/10] overflow-hidden">
+                <img 
+                  src={`/Flat/posts/${cleanId}.png`} 
+                  alt={post.data.title}
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </div>
               
-              <h2 className="text-xl font-bold mb-4 text-slate-900 group-hover:text-accent transition-colors leading-tight">
-                {post.data.title}
-              </h2>
-              
-              <p className="text-slate-500 text-sm mb-8 line-clamp-3 leading-relaxed">
-                {post.data.description}
-              </p>
-              
-              <div className="mt-auto flex items-center gap-2 text-accent font-bold text-sm group-hover:gap-3 transition-all">
-                Читать полностью <ArrowRight className="w-4 h-4" />
+              <div class="p-8 flex flex-col flex-grow">
+                <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 font-bold uppercase tracking-widest font-sans">
+                  <span class="flex items-center gap-1.5">
+                    <Calendar class="w-3.5 h-3.5 text-accent" />
+                    {post.data.date}
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <User class="w-3.5 h-3.5 text-accent" />
+                    {post.data.author}
+                  </span>
+                </div>
+                
+                <h2 class="text-xl font-bold mb-4 text-slate-900 group-hover:text-accent transition-colors leading-tight font-serif">
+                  {post.data.title}
+                </h2>
+                
+                <p class="text-slate-500 text-sm mb-8 line-clamp-3 leading-relaxed">
+                  {post.data.description}
+                </p>
+                
+                <div class="mt-auto flex items-center gap-2 text-accent font-bold text-sm group-hover:gap-3 transition-all uppercase tracking-widest">
+                  Читать полностью <ArrowRight class="w-4 h-4" />
+                </div>
               </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          );
+        })}
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { X, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { X, Phone, Send } from 'lucide-react';
 
 interface CallbackModalProps {
   isOpen: boolean;
@@ -18,25 +18,16 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
-    if (value.startsWith('7') || value.startsWith('8')) {
-      const numbers = value.substring(1);
-      formatPhone(numbers);
-    } else if (value.length > 0) {
-      formatPhone(value);
-    } else {
-      setPhone('');
-    }
-  };
-
-  const formatPhone = (numbers: string) => {
-    let formatted = '+7 ';
-    if (numbers.length > 0) formatted += '(' + numbers.substring(0, 3);
-    if (numbers.length > 3) formatted += ') ' + numbers.substring(3, 6);
-    if (numbers.length > 6) formatted += '-' + numbers.substring(6, 8);
-    if (numbers.length > 8) formatted += '-' + numbers.substring(8, 10);
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.startsWith('7') || value.startsWith('8')) value = value.substring(1);
     
-    if (numbers.length <= 10) setPhone(formatted);
+    let formatted = '+7 ';
+    if (value.length > 0) formatted += '(' + value.substring(0, 3);
+    if (value.length > 3) formatted += ') ' + value.substring(3, 6);
+    if (value.length > 6) formatted += '-' + value.substring(6, 8);
+    if (value.length > 8) formatted += '-' + value.substring(8, 10);
+    
+    if (value.length <= 10) setPhone(formatted);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,31 +46,19 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      // Используем абсолютный путь для API, чтобы избежать проблем с BASE_URL
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'callback',
-          name,
-          phone
-        }),
+        body: JSON.stringify({ name, phone, type: 'callback' }),
       });
 
       if (response.ok) {
         setSubmitted(true);
-        setTimeout(() => {
-          onClose();
-          setSubmitted(false);
-          setName('');
-          setPhone('');
-        }, 3000);
       } else {
-        const data = await response.json();
-        throw new Error(data.error || 'Ошибка при отправке');
+        throw new Error('Ошибка при отправке');
       }
-    } catch (err: any) {
-      setError(err.message || 'Не удалось отправить заявку. Пожалуйста, попробуйте позже.');
+    } catch (err) {
+      setError('Не удалось отправить заявку. Попробуйте позже.');
     } finally {
       setLoading(false);
     }
@@ -87,68 +66,77 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
       />
-      <motion.div 
+      
+      <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all z-10"
         >
           <X className="w-6 h-6" />
         </button>
 
-        <div className="p-6 md:p-8 lg:p-10">
+        <div className="p-8 md:p-10">
           {submitted ? (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Phone className="w-10 h-10" />
+            <div className="text-center py-8 animate-in fade-in zoom-in duration-500">
+              <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 text-accent">
+                <Send className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Спасибо за заявку!</h3>
-              <p className="text-slate-500">Мы перезвоним вам в течение 15 минут.</p>
+              <h3 className="text-2xl font-bold mb-2 text-slate-900 font-serif">Заявка принята!</h3>
+              <p className="text-slate-600 mb-8">Инженер перезвонит вам в течение 30 минут.</p>
+              <button 
+                onClick={onClose}
+                className="bg-accent text-white px-8 py-3 rounded-xl font-bold hover:bg-accent/90 transition-all"
+              >
+                Закрыть
+              </button>
             </div>
           ) : (
             <>
-              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6">
-                <Phone className="text-accent w-8 h-8" />
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-accent">
+                  <Phone className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 font-serif">Заказать звонок</h3>
+                <p className="text-slate-500 text-sm mt-2">Оставьте свой номер, и мы проконсультируем вас бесплатно.</p>
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Заказать звонок</h3>
-              <p className="text-slate-500 mb-8">Оставьте ваши контакты, и мы перезвоним вам в течение 15 минут.</p>
 
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Ваше имя</label>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Имя</label>
                   <input 
                     type="text" 
-                    required
+                    placeholder="Ваше имя"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Иван"
-                    className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Телефон</label>
-                  <input 
-                    type="tel" 
-                    required
-                    value={phone}
-                    onChange={handlePhoneChange}
-                    placeholder="+7 (999) 000-00-00"
-                    className={`w-full px-5 py-4 rounded-xl bg-slate-50 border ${error && phone.length < 18 ? 'border-red-500' : 'border-slate-200'} focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all`}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-slate-900 focus:outline-none focus:border-accent focus:bg-white transition-all"
                   />
                 </div>
                 
-                {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Телефон</label>
+                  <input 
+                    type="tel" 
+                    required
+                    placeholder="+7 (___) ___-__-__"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    className={`w-full bg-slate-50 border ${error ? 'border-red-500' : 'border-slate-100'} rounded-2xl px-5 py-4 text-slate-900 focus:outline-none focus:border-accent focus:bg-white transition-all`}
+                  />
+                  {error && <p className="text-red-500 text-[10px] mt-1 ml-1">{error}</p>}
+                </div>
+                
                 <button 
                   disabled={loading}
                   className="w-full bg-accent text-white py-5 rounded-2xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20 mt-4 disabled:opacity-50"

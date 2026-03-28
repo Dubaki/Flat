@@ -184,8 +184,8 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
         )}
       </div>
       
-      <p className="mt-6 text-center text-[9px] text-white/30 relative z-10 leading-tight">
-        Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+      <p className="mt-6 text-center text-[9px] text-white/30 relative z-10 leading-tight uppercase tracking-wider">
+        Конфиденциальность данных по 152-ФЗ
       </p>
     </div>
   );

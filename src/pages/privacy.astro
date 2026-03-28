@@ -13,7 +13,7 @@ const privacyContent = `
 1.1. Оператор ставит своей важнейшей целью и условием осуществления своей деятельности соблюдение прав и свобод человека и гражданина при обработке его персональных данных, в том числе защиты прав на неприкосновенность частной жизни, личную и семейную тайну.
 
 **2. Основные понятия, используемые в Политике**
-2.1. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу: https://Dubaki.github.io/Flat/.
+2.1. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу: https://Dubaki.github.io/.
 2.2. Пользователь — любой посетитель веб-сайта.
 2.3. Персональные данные — любая информация, относящаяся прямо или косвенно к определенному или определяемому Пользователю веб-сайта.
 
@@ -42,26 +42,26 @@ const privacyContent = `
 ---
 
 <Layout title="Политика конфиденциальности | Дядя Фёдор" description="Политика обработки персональных данных компании Дядя Фёдор. Соблюдение 152-ФЗ.">
-  <div className="pt-24 min-h-screen bg-slate-50">
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <div className="mb-8">
-        <a href="/Flat/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2 transition-all hover:gap-3">
-          <ArrowLeft className="w-4 h-4" /> Назад на главную
+  <div class="pt-24 min-h-screen bg-slate-50">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+      <div class="mb-8">
+        <a href=\"/Flat/" class="text-accent hover:underline text-sm font-medium flex items-center gap-2 transition-all hover:gap-3">
+          <ArrowLeft class="w-4 h-4" /> Назад на главную
         </a>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-12">
-        <div className="flex items-center gap-4 mb-10 pb-10 border-b border-slate-100">
-          <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
-            <ShieldCheck className="text-accent w-8 h-8" />
+      <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-12">
+        <div class="flex items-center gap-4 mb-10 pb-10 border-b border-slate-100">
+          <div class="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center shrink-0">
+            <ShieldCheck class="text-accent w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Политика конфиденциальности</h1>
-            <p className="text-slate-400 text-sm mt-1">Редакция от 27 марта 2026 г.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Политика конфиденциальности</h1>
+            <p class="text-slate-400 text-sm mt-1">Редакция от 27 марта 2026 г.</p>
           </div>
         </div>
 
-        <div className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-headings:font-bold prose-p:text-slate-600 prose-p:leading-relaxed prose-strong:text-slate-900">
+        <div class="prose prose-slate max-w-none prose-headings:text-slate-900 prose-headings:font-bold prose-p:text-slate-600 prose-p:leading-relaxed prose-strong:text-slate-900">
           <ReactMarkdown remarkPlugins={[remarkGfm]} client:load>
             {privacyContent}
           </ReactMarkdown>

@@ -17,7 +17,7 @@ const NewBuildingRepair = () => {
               Ремонт квартир в новостройках
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              Комплексный ремонт квартир с нуля. Возводим перегородки, делаем разводка электрики и сантехники, выравниваем стены по маякам и выполняем чистовую отделку.
+              Комплексный ремонт квартир с нуля. Возводим перегородки, делаем разводку электрики и сантехники, выравниваем стены по маякам и выполняем чистовую отделку.
             </p>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">

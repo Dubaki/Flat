@@ -9,8 +9,8 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="flex items-center gap-2 mb-6 min-w-0">
-              <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg shrink-0">
-                <Hammer className="text-white w-6 h-6" />
+              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-lg shrink-0">
+                <Hammer className="text-white w-5 h-5" />
               </div>
               <span className="text-xl font-bold tracking-tighter truncate">
                 Дядя <span className="text-accent">Фёдор</span>
@@ -56,6 +56,9 @@ const Footer: React.FC = () => {
 
         <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-white/30">
           <p>© {new Date().getFullYear()} Дядя Фёдор. Все права защищены.</p>
+          <div className="flex flex-col md:flex-row gap-2 md:gap-6 text-center">
+            {/* Юридические данные будут добавлены позже */}
+          </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
             <a href="/Flat/privacy" className="hover:text-white transition-colors">Политика обработки персональных данных</a>
             <span className="cursor-default text-white/30">Пользовательское соглашение</span>
