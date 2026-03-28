@@ -10,28 +10,28 @@ const Services: React.FC = () => {
       title: 'Косметический ремонт',
       description: 'Освежить интерьер: переклейка обоев, замена ламината, покраска потолков, замена розеток.',
       icon: Paintbrush,
-      price: 'от 4 000 ₽/м²',
+      price: 'от 7 500 ₽/м²',
       link: '/kosmeticheskiy-remont'
     },
     {
       title: 'Капитальный ремонт',
       description: 'Полный демонтаж, выравнивание стен по маякам, новая стяжка, замена электрики и труб.',
       icon: Hammer,
-      price: 'от 9 000 ₽/м²',
-      link: 'contact'
+      price: 'от 14 500 ₽/м²',
+      link: 'calculator'
     },
     {
       title: 'Ремонт по дизайн-проекту',
       description: 'Реализация сложных архитектурных решений, теневые профили, крупноформатный керамогранит.',
       icon: Layout,
-      price: 'от 14 000 ₽/м²',
-      link: 'contact'
+      price: 'от 22 000 ₽/м²',
+      link: 'calculator'
     },
     {
       title: 'Черновая отделка (White Box)',
       description: 'Подготовка новостройки к чистовой отделке: возведение перегородок, штукатурка, разводка сетей.',
       icon: Wrench,
-      price: 'от 6 000 ₽/м²',
+      price: 'от 9 500 ₽/м²',
       link: '/remont-novostroek'
     }
   ];

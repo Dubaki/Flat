@@ -21,10 +21,21 @@ const Blog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('./blog-index.json');
+        const baseUrl = import.meta.env.BASE_URL;
+        const safeBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+        const response = await fetch(`${safeBaseUrl}blog-index.json`);
         if (!response.ok) throw new Error('Failed to fetch posts');
         const data = await response.json();
-        setPosts(data);
+        
+        // Fix image paths for all posts
+        const fixedData = data.map((post: BlogPost) => ({
+          ...post,
+          image: post.image.startsWith('./') 
+            ? `${safeBaseUrl}${post.image.substring(2)}` 
+            : post.image
+        }));
+        
+        setPosts(fixedData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {

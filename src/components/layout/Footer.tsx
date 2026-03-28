@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
             <h4 className="font-bold mb-6">Контакты</h4>
             <ul className="space-y-4 text-sm text-white/50">
               <li><a href="tel:89221800911" className="hover:text-white transition-colors">8-922-18-00-911</a></li>
-              <li><a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram: @Mebabanza</a></li>
+              <li><a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram / MAX: @Mebabanza</a></li>
               <li><a href="mailto:3536246@gmail.com" className="hover:text-white transition-colors">3536246@gmail.com</a></li>
               <li>Пн-Вс: 09:00 - 20:00</li>
             </ul>
@@ -61,8 +61,8 @@ const Footer: React.FC = () => {
             {/* Юридические данные будут добавлены позже */}
           </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
-            <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
-            <a href="#" className="hover:text-white transition-colors">Публичная оферта</a>
+            <Link to="/privacy" className="hover:text-white transition-colors">Политика обработки персональных данных</Link>
+            <span className="cursor-default text-white/30">Пользовательское соглашение</span>
           </div>
         </div>
       </div>

@@ -4,6 +4,10 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import HashScrollLinkButton from '../components/ui/HashScrollLinkButton';
+import GlobalCalc from '../components/calculators/GlobalCalc';
+import BathroomCalc from '../components/calculators/BathroomCalc';
+import RoughCalc from '../components/calculators/RoughCalc';
 
 interface BlogPostData {
   id: string;
@@ -26,14 +30,17 @@ const BlogPost = () => {
     const fetchPost = async () => {
       if (!slug) return;
       try {
-        const indexResponse = await fetch('./blog-index.json');
+        const baseUrl = import.meta.env.BASE_URL;
+        const safeBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
+        const indexResponse = await fetch(`${safeBaseUrl}blog-index.json`);
         if (!indexResponse.ok) throw new Error('Failed to load blog index');
         const indexData = await indexResponse.json();
         const meta = indexData.find((p: any) => p.id === slug);
-        
+
         if (!meta) throw new Error('Post not found');
 
-        const contentResponse = await fetch(`./posts/${decodeURIComponent(slug)}.md`);
+        const contentResponse = await fetch(`${safeBaseUrl}posts/${decodeURIComponent(slug)}.md`);
         if (!contentResponse.ok) throw new Error('Failed to load post content');
         const rawContent = await contentResponse.text();
 
@@ -43,8 +50,13 @@ const BlogPost = () => {
           if (parts.length > 1) content = parts[1];
         }
 
+        const imagePath = meta.image.startsWith('./') 
+          ? `${safeBaseUrl}${meta.image.substring(2)}` 
+          : meta.image;
+
         setPost({
           ...meta,
+          image: imagePath,
           content
         });
       } catch (err) {
@@ -119,7 +131,31 @@ const BlogPost = () => {
           prose-a:text-accent hover:prose-a:text-accent/80 
           prose-img:rounded-2xl prose-blockquote:border-accent 
           prose-blockquote:bg-accent/5 prose-blockquote:py-1 prose-blockquote:px-6 prose-blockquote:rounded-r-xl">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              p: ({ children }) => {
+                const text = React.Children.toArray(children).join('').trim();
+                if (text === '[global-calc]') return <div className="not-prose my-12"><GlobalCalc /></div>;
+                if (text === '[bathroom-calc]') return <div className="not-prose my-12"><BathroomCalc /></div>;
+                if (text === '[rough-calc]') return <div className="not-prose my-12"><RoughCalc /></div>;
+                return <p>{children}</p>;
+              },
+              a: ({ href, children }) => {
+                // Handle internal hash links for smooth scrolling to home sections
+                if (href?.startsWith('#')) {
+                  const targetId = href.replace('#', '');
+                  return (
+                    <HashScrollLinkButton to={targetId} className="text-accent font-bold hover:underline cursor-pointer">
+                      {children}
+                    </HashScrollLinkButton>
+                  );
+                }
+                // Default external link behavior
+                return <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+              }
+            }}
+          >
             {post.content}
           </ReactMarkdown>
         </div>

@@ -30,7 +30,7 @@ const NewBuildingRepair = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Стоимость</div>
-                <div className="text-xl sm:text-2xl font-bold text-accent whitespace-nowrap">от 6 000 ₽/м²</div>
+                <div className="text-xl sm:text-2xl font-bold text-accent whitespace-nowrap">от 12 000 ₽/м²</div>
               </div>
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Сроки</div>

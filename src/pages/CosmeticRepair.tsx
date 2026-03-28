@@ -9,7 +9,7 @@ const CosmeticRepair = () => {
     <div className="pt-24 min-h-screen bg-slate-50">
       <Helmet>
         <title>Косметический ремонт квартир в Екатеринбурге | Цены | Дядя Фёдор</title>
-        <meta name="description" content="Недорогой косметический ремонт квартир под ключ в Екатеринбурге. Освежим интерьер за 14 дней. Цены от 4000 руб/м2. Гарантия по договору." />
+        <meta name="description" content="Недорогой косметический ремонт квартир под ключ в Екатеринбурге. Освежим интерьер за 14 дней. Цены от 7500 руб/м2. Гарантия по договору." />
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -30,7 +30,7 @@ const CosmeticRepair = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Стоимость</div>
-                <div className="text-xl sm:text-2xl font-bold text-accent whitespace-nowrap">от 4 000 ₽/м²</div>
+                <div className="text-xl sm:text-2xl font-bold text-accent whitespace-nowrap">от 7 500 ₽/м²</div>
               </div>
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full sm:w-auto">
                 <div className="text-sm text-slate-500 mb-1">Сроки</div>

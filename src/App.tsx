@@ -7,6 +7,7 @@ import { AnimatePresence } from 'motion/react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
+import CookieConsent from './components/ui/CookieConsent';
 import CallbackModal from './components/ui/CallbackModal';
 
 // Pages
@@ -15,6 +16,8 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import CosmeticRepair from './pages/CosmeticRepair';
 import NewBuildingRepair from './pages/NewBuildingRepair';
+import CalculatorPage from './pages/CalculatorPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,11 +33,14 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/kosmeticheskiy-remont" element={<CosmeticRepair />} />
               <Route path="/remont-novostroek" element={<NewBuildingRepair />} />
+              <Route path="/calculator" element={<CalculatorPage />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
             </Routes>
           </main>
           <Footer />
+          <CookieConsent />
           <AnimatePresence>
             {isModalOpen && (
               <CallbackModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

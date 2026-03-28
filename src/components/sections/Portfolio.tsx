@@ -7,28 +7,28 @@ const Portfolio: React.FC = () => {
     {
       title: 'Капитальный ремонт санузла',
       type: 'Полный цикл: от демонтажа до установки сантехники',
-      price: 'Работа: 180 000 ₽',
+      price: 'Работа: 225 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before4.jpg`,
       afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after2.jpg`
     },
     {
       title: 'Инженерные сети и отделка',
       type: 'Разводка коммуникаций и облицовка плиткой',
-      price: 'Работа: 120 000 ₽',
+      price: 'Работа: 150 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before2.jpg`,
       afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after3.jpg`
     },
     {
       title: 'Теплый пол и керамогранит',
       type: 'Монтаж системы отопления и финишное покрытие',
-      price: 'Работа: 95 000 ₽',
+      price: 'Работа: 120 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before3.jpg`,
       afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after5.jpg`
     },
     {
       title: 'Подготовка и финишная отделка',
       type: 'Штукатурка и монтаж санфаянса',
-      price: 'Работа: 140 000 ₽',
+      price: 'Работа: 175 000 ₽',
       beforeImage: `${import.meta.env.BASE_URL}assets/projects/real1/before1.jpg`,
       afterImage: `${import.meta.env.BASE_URL}assets/projects/real1/after4.jpg`
     }

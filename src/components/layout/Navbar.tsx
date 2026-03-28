@@ -80,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenModal }) => {
             <a href="tel:89221800911" className={`hover:text-accent transition-colors ${isSolid ? 'text-slate-900' : 'text-white'}`} title="Позвонить">
               <Phone className="w-5 h-5" />
             </a>
-            <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-slate-900' : 'text-white'}`} title="Написать в Telegram">
+            <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className={`hover:text-accent transition-colors ${isSolid ? 'text-slate-900' : 'text-white'}`} title="Написать в Telegram / MAX">
               <Send className="w-5 h-5" />
             </a>
           </div>
@@ -147,7 +147,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenModal }) => {
                 <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
                   <Send className="w-5 h-5" />
                 </div>
-                <span className="font-medium">Telegram</span>
+                <span className="font-medium">Telegram / MAX</span>
               </a>
             </div>
             
