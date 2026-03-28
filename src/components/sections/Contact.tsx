@@ -5,7 +5,7 @@ const Contact: React.FC = () => {
   const [name, setName] = React.useState('');
   const [phone, setPhone] = React.useState('');
   const [address, setAddress] = React.useState('');
-  const [agreed, setAgreed] = React.useState(true);
+  const [agreed, setAgreed] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [submitted, setSubmitted] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);

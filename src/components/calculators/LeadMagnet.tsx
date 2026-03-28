@@ -15,7 +15,7 @@ interface LeadMagnetProps {
 
 const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData, onSuccess }) => {
   const [phone, setPhone] = useState<string>('');
-  const [agreed, setAgreed] = useState<boolean>(true);
+  const [agreed, setAgreed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

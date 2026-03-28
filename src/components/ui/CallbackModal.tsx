@@ -10,7 +10,7 @@ interface CallbackModalProps {
 const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
   const [name, setName] = React.useState('');
   const [phone, setPhone] = React.useState('');
-  const [agreed, setAgreed] = React.useState(true);
+  const [agreed, setAgreed] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [submitted, setSubmitted] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
