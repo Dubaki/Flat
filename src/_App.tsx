@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AnimatePresence } from 'motion/react';
 
@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <HelmetProvider>
-      <HashRouter>
+      <BrowserRouter basename="/Flat">
         <ScrollToTop />
         <div className="min-h-screen font-sans w-full overflow-x-hidden break-words">
           <Navbar onOpenModal={() => setIsModalOpen(true)} />
@@ -47,7 +47,7 @@ export default function App() {
             )}
           </AnimatePresence>
         </div>
-      </HashRouter>
+      </BrowserRouter>
     </HelmetProvider>
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 interface HashScrollLinkButtonProps {
   to: string;
@@ -9,31 +8,27 @@ interface HashScrollLinkButtonProps {
 }
 
 const HashScrollLinkButton: React.FC<HashScrollLinkButtonProps> = ({ to, className, children, onClick }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onClick) onClick();
-    if (location.pathname !== '/') {
-      window.scrollTo(0, 0); // Scroll to top before navigating
-      navigate('/');
-      setTimeout(() => {
-        const element = document.getElementById(to);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
+    
+    const pathname = window.location.pathname;
+    const isHomePage = pathname === '/Flat' || pathname === '/Flat/';
+
+    if (!isHomePage) {
+      window.location.href = `/Flat/#${to}`;
     } else {
       const element = document.getElementById(to);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.location.hash = to;
       }
     }
   };
 
   return (
-    <a href={`#${to}`} onClick={handleClick} className={className}>
+    <a href={`/Flat/#${to}`} onClick={handleClick} className={className}>
       {children}
     </a>
   );

@@ -1,27 +1,19 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Paintbrush, Hammer, Layout, Wrench, ArrowRight } from 'lucide-react';
-import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 
 const CosmeticRepair = () => {
   return (
     <div className="pt-24 min-h-screen bg-slate-50">
-      <Helmet>
-        <title>Косметический ремонт квартир в Екатеринбурге | Цены | Дядя Фёдор</title>
-        <meta name="description" content="Недорогой косметический ремонт квартир под ключ в Екатеринбурге. Освежим интерьер за 14 дней. Цены от 7500 руб/м2. Гарантия по договору." />
-      </Helmet>
-
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-8">
-          <Link to="/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2">
+          <a href="/Flat/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2">
             ← На главную
-          </Link>
+          </a>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 font-serif">
               Косметический ремонт квартир
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
@@ -37,7 +29,7 @@ const CosmeticRepair = () => {
                 <div className="text-xl sm:text-2xl font-bold text-slate-800">от 14 дней</div>
               </div>
             </div>
-            <a href="/#calculator" className="inline-block bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">
+            <a href="/Flat/calculator" className="inline-block bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">
               Рассчитать стоимость
             </a>
           </div>
@@ -51,7 +43,7 @@ const CosmeticRepair = () => {
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold mb-8 text-center">Что входит в косметический ремонт?</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center font-serif text-slate-900">Что входит в косметический ремонт?</h2>
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {[
             { title: 'Демонтаж', desc: 'Снятие старых обоев, линолеума, плинтусов и розеток.' },
@@ -62,10 +54,10 @@ const CosmeticRepair = () => {
             { title: 'Электрика', desc: 'Замена розеток и выключателей на старые места.' }
           ].map((item, i) => (
             <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center text-accent font-bold mb-4">
+              <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center text-accent font-bold mb-4 font-sans text-sm">
                 {i + 1}
               </div>
-              <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+              <h3 className="font-bold text-lg mb-2 text-slate-900">{item.title}</h3>
               <p className="text-slate-600 text-sm">{item.desc}</p>
             </div>
           ))}

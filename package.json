@@ -5,13 +5,13 @@
   "homepage": "https://Dubaki.github.io/Flat/",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "prebuild": "node scripts/generate-blog-index.js",
     "postbuild": "echo. > dist/.nojekyll",
     "predeploy": "npm run build",
     "deploy": "gh-pages -t -d dist",
-    "build": "vite build",
-    "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "start": "tsx server.ts"
@@ -36,8 +36,12 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@astrojs/react": "^5.0.2",
+    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/tailwind": "^6.0.2",
     "@types/express": "^4.17.25",
     "@types/node": "^22.14.0",
+    "astro": "^6.1.1",
     "autoprefixer": "^10.4.21",
     "gh-pages": "^6.3.0",
     "tailwindcss": "^4.1.14",

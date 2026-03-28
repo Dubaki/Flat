@@ -1,0 +1,80 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { Calendar, User, ArrowLeft } from 'lucide-react';
+import GlobalCalc from '../../components/calculators/GlobalCalc';
+import BathroomCalc from '../../components/calculators/BathroomCalc';
+import RoughCalc from '../../components/calculators/RoughCalc';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <div className="pt-32 pb-20 bg-white min-h-screen">
+    <article className="max-w-4xl mx-auto px-6">
+      <div className="mb-12">
+        <a href="/Flat/blog" className="text-accent hover:underline text-sm font-medium flex items-center gap-2 mb-8 transition-all hover:gap-3">
+          <ArrowLeft className="w-4 h-4" /> Назад в блог
+        </a>
+        
+        <div className="flex items-center gap-4 text-xs text-slate-400 mb-6 font-bold uppercase tracking-widest">
+          <span className="flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-accent" />
+            {post.data.date}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <User className="w-3.5 h-3.5 text-accent" />
+            {post.data.author}
+          </span>
+        </div>
+        
+        <h1 className="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-8">
+          {post.data.title}
+        </h1>
+        
+        <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl mb-12">
+          <img 
+            src={`/Flat/posts/${post.id}.png`} 
+            alt={post.data.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      <div className="prose prose-slate prose-lg max-w-none 
+        prose-headings:text-slate-900 prose-headings:font-bold 
+        prose-p:text-slate-600 prose-p:leading-relaxed
+        prose-a:text-accent prose-a:no-underline hover:prose-a:underline
+        prose-img:rounded-3xl prose-img:shadow-xl
+        prose-blockquote:border-accent prose-blockquote:bg-slate-50 prose-blockquote:py-2 prose-blockquote:rounded-r-2xl">
+        <Content />
+      </div>
+
+      {/* Special conditional rendering for calculators based on slug or metadata could go here */}
+      {post.id === '1' && <div class="my-16"><GlobalCalc client:visible /></div>}
+      {post.id === 'remont-vannoy-ekaterinburg' && <div class="my-16"><BathroomCalc client:visible /></div>}
+      {post.id === 'nevidm' && <div class="my-16"><RoughCalc client:visible /></div>}
+
+      <div className="mt-20 pt-10 border-t border-slate-100">
+        <div className="bg-slate-50 rounded-3xl p-8 md:p-12 text-center">
+          <h3 className="text-2xl font-bold mb-4">Понравилась статья?</h3>
+          <p className="text-slate-600 mb-8 max-w-md mx-auto">
+            Оставьте заявку на консультацию, и мы поможем реализовать ваш проект на таком же уровне качества.
+          </p>
+          <a href="/Flat/#contact" className="inline-block bg-accent text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">
+            Связаться с нами
+          </a>
+        </div>
+      </div>
+    </article>
+  </div>
+</Layout>

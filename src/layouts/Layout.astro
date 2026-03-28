@@ -1,0 +1,73 @@
+---
+import '../index.css';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import CookieConsent from '../components/ui/CookieConsent';
+import CallbackModal from '../components/ui/CallbackModal';
+import { useState } from 'react';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Профессиональный ремонт квартир в Екатеринбурге без посредников." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/Flat/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		
+		<!-- Open Graph / Social -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		
+		<!-- Schema.org Markup -->
+		<script type="application/ld+json" is:inline>
+		{
+			"@context": "https://schema.org",
+			"@type": "HomeAndConstructionBusiness",
+			"name": "Дядя Фёдор",
+			"description": "Ремонт квартир в Екатеринбурге без посредников.",
+			"telephone": "8-922-18-00-911",
+			"email": "3536246@gmail.com",
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Екатеринбург",
+				"addressRegion": "Свердловская область",
+				"addressCountry": "RU"
+			},
+			"priceRange": "от 7500 RUB",
+			"areaServed": "Екатеринбург"
+		}
+		</script>
+	</head>
+	<body>
+		<div class="min-h-screen font-sans w-full overflow-x-hidden break-words">
+			<Navbar client:load />
+			<main class="w-full">
+				<slot />
+			</main>
+			<Footer />
+			<CookieConsent client:idle />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--accent: 37, 99, 235;
+		--accent-light: 219, 234, 254;
+		--accent-dark: 30, 58, 138;
+	}
+	html {
+		scroll-behavior: smooth;
+	}
+</style>

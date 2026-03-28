@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CalculatorHub from '../components/sections/CalculatorHub';
+---
+
+<Layout 
+  title="Калькулятор стоимости ремонта квартир в Екатеринбурге | Цены 2026"
+  description="Рассчитайте точную смету на ремонт квартиры, санузла или черновые работы онлайн. Получите PDF-расчет и зафиксируйте скидку 10% на материалы."
+>
+  <div className="pt-20">
+    <CalculatorHub client:load />
+  </div>
+</Layout>
