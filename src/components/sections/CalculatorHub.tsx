@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import GlobalCalc from '../calculators/GlobalCalc';
 import BathroomCalc from '../calculators/BathroomCalc';
 import RoughCalc from '../calculators/RoughCalc';
-import { Home, Bath, Drill } from 'lucide-react';
+import { Home, Bath, Drill, Calculator } from 'lucide-react';
 import { reachGoal } from '../../utils/metrica';
 
 const CalculatorHub: React.FC = () => {
@@ -81,10 +81,15 @@ const CalculatorHub: React.FC = () => {
                   {tab.description}
                 </p>
                 
-                {isActive && (
+                {isActive ? (
                   <div className="mt-6 flex items-center gap-2 text-accent font-bold text-xs uppercase tracking-widest animate-pulse">
                     <span className="w-2 h-2 bg-accent rounded-full"></span>
                     Активен
+                  </div>
+                ) : (
+                  <div className="mt-6 w-full flex items-center justify-center gap-2 bg-accent text-white py-3 px-4 rounded-2xl font-bold text-sm group-hover:bg-accent/90 transition-colors">
+                    <Calculator className="w-4 h-4" />
+                    Рассчитать стоимость
                   </div>
                 )}
               </button>
@@ -112,8 +117,8 @@ const CalculatorHub: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center animate-bounce opacity-20">
-            <p className="text-4xl">↓</p>
+          <div className="text-center">
+            <p className="text-slate-400 text-sm animate-bounce">↑ Выберите тип расчёта выше</p>
           </div>
         )}
 
