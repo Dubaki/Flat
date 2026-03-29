@@ -1,5 +1,6 @@
 import React from 'react';
 import { Phone, Send, Mail } from 'lucide-react';
+import { reachGoal } from '../../utils/metrica';
 
 const Contact: React.FC = () => {
   const [name, setName] = React.useState('');
@@ -47,6 +48,7 @@ const Contact: React.FC = () => {
 
       if (response.ok) {
         setSubmitted(true);
+        reachGoal('lead_form_contact');
       } else {
         throw new Error('Ошибка при отправке');
       }
@@ -77,7 +79,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Телефон</div>
-                    <a href="tel:89221800911" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors">8-922-18-00-911</a>
+                    <a href="tel:89221800911" onClick={() => reachGoal('click_phone')} className="text-lg sm:text-xl font-bold hover:text-accent transition-colors">8-922-18-00-911</a>
                   </div>
                 </div>
                 
@@ -87,7 +89,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider font-bold">Telegram / MAX</div>
-                    <a href="https://t.me/Mebabanza" target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors break-words">@Mebabanza</a>
+                    <a href="https://t.me/Mebabanza" onClick={() => reachGoal('click_telegram')} target="_blank" rel="noopener noreferrer" className="text-lg sm:text-xl font-bold hover:text-accent transition-colors break-words">@Mebabanza</a>
                   </div>
                 </div>
 

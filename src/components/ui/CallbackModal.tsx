@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Phone, Send } from 'lucide-react';
+import { reachGoal } from '../../utils/metrica';
 
 interface CallbackModalProps {
   isOpen: boolean;
@@ -54,6 +55,7 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
 
       if (response.ok) {
         setSubmitted(true);
+        reachGoal('lead_form_callback');
       } else {
         throw new Error('Ошибка при отправке');
       }
