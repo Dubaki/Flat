@@ -23,22 +23,19 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: 📦 Install dependencies
-        run: |
-          node -v
-          npm -v
-          npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: 🏗️ Build project
         run: npm run build
 
       - name: 🚀 Sync files via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/
-          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
-          protocol: sftp
           port: 22
-          delete-destination: false
+          local_path: dist/
+          remote_path: ${{ secrets.FTP_REMOTE_DIR }}
+          sftp_only: true
+          delete_remote_files: false
