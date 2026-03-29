@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://uf66.ru/sitemap-index.xml
