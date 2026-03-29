@@ -4,8 +4,8 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://dubaki.github.io',
-  base: '/Flat',
+  site: 'https://uf66.ru',
+  base: '/',
   integrations: [
     react(),
     sitemap(),

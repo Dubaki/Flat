@@ -10,7 +10,7 @@ const Services: React.FC = () => {
       description: 'Освежить интерьер: переклейка обоев, замена ламината, покраска потолков, замена розеток.',
       icon: Paintbrush,
       price: 'от 7 500 ₽/м²',
-      link: '/Flat/kosmeticheskiy-remont'
+      link: '/kosmeticheskiy-remont'
     },
     {
       title: 'Капитальный ремонт',
@@ -31,7 +31,7 @@ const Services: React.FC = () => {
       description: 'Подготовка новостройки к чистовой отделке: возведение перегородок, штукатурка, разводка сетей.',
       icon: Wrench,
       price: 'от 9 500 ₽/м²',
-      link: '/Flat/remont-novostroek'
+      link: '/remont-novostroek'
     }
   ];
 
@@ -66,7 +66,7 @@ const Services: React.FC = () => {
                   <div className="text-xs text-slate-400 mt-1">только за работу</div>
                 </div>
                 {service.link && (
-                  service.link.startsWith('/Flat/') ? (
+                  service.link.startsWith('/') ? (
                     <a href={service.link} className="w-full sm:w-auto bg-accent text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-accent/90 transition-colors flex items-center justify-center gap-2">
                       Подробнее <ArrowRight className="w-4 h-4" />
                     </a>

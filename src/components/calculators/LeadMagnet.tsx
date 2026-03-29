@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, Loader2, Download } from 'lucide-react';
 import { generateCalculatorPDF } from '../../utils/pdfGenerator';
+import { reachGoal } from '../../utils/metrica';
 
 interface LeadMagnetProps {
   totalEstimated: number;
@@ -34,6 +35,7 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
   };
 
   const handleDownloadPDF = async () => {
+    reachGoal('pdf_downloaded');
     const success = await generateCalculatorPDF({
       title: pdfData.title,
       phone: phone,
@@ -81,6 +83,7 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
 
       if (response.ok) {
         setSubmitted(true);
+        reachGoal('lead_captured');
         if (onSuccess) onSuccess();
       } else {
         throw new Error('Ошибка при отправке');
@@ -110,7 +113,7 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
 
         <div className="bg-white/10 rounded-2xl p-6 mb-8 backdrop-blur-sm border border-white/10">
           <div className="text-xs text-white/70 mb-1">Итого (работа + материалы):</div>
-          <div className="text-2xl sm:text-3xl font-bold text-accent">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-accent break-words">
             ~ {totalEstimated.toLocaleString('ru-RU')} ₽
           </div>
         </div>

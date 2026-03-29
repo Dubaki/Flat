@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import LeadMagnet from './LeadMagnet';
+import { reachGoal } from '../../utils/metrica';
 
 const GlobalCalc: React.FC = () => {
   const [area, setArea] = useState<number>(50);
   const [buildingType, setBuildingType] = useState<'new' | 'old'>('new');
   const [bathrooms, setBathrooms] = useState<number>(1);
   const [repairType, setRepairType] = useState<'cosmetic' | 'capital' | 'design'>('capital');
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  const handleInteraction = () => {
+    if (!hasInteracted) {
+      reachGoal('calc_interacted');
+      setHasInteracted(true);
+    }
+  };
 
   const baseRates = {
     cosmetic: 7500,
@@ -46,7 +55,10 @@ const GlobalCalc: React.FC = () => {
           </div>
           <input 
             type="range" min="20" max="150" step="1" value={area}
-            onChange={(e) => setArea(Number(e.target.value))}
+            onChange={(e) => {
+              setArea(Number(e.target.value));
+              handleInteraction();
+            }}
             className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent"
           />
           <div className="flex justify-between text-xs text-slate-400 mt-2">
@@ -60,13 +72,19 @@ const GlobalCalc: React.FC = () => {
             <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Тип жилья</label>
             <div className="grid grid-cols-2 gap-3">
               <button 
-                onClick={() => setBuildingType('new')}
+                onClick={() => {
+                  setBuildingType('new');
+                  handleInteraction();
+                }}
                 className={`py-3 px-2 rounded-xl border-2 font-semibold transition-all text-sm ${buildingType === 'new' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
               >
                 Новостройка
               </button>
               <button 
-                onClick={() => setBuildingType('old')}
+                onClick={() => {
+                  setBuildingType('old');
+                  handleInteraction();
+                }}
                 className={`py-3 px-2 rounded-xl border-2 font-semibold transition-all text-sm ${buildingType === 'old' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
               >
                 Вторичка
@@ -80,7 +98,10 @@ const GlobalCalc: React.FC = () => {
               {[1, 2, 3].map((num) => (
                 <button 
                   key={num}
-                  onClick={() => setBathrooms(num)}
+                  onClick={() => {
+                    setBathrooms(num);
+                    handleInteraction();
+                  }}
                   className={`py-3 rounded-xl border-2 font-semibold transition-all text-sm ${bathrooms === num ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
                 >
                   {num === 3 ? '3+' : num}
@@ -94,21 +115,30 @@ const GlobalCalc: React.FC = () => {
           <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Вид ремонта</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
             <button 
-              onClick={() => setRepairType('cosmetic')}
+              onClick={() => {
+                setRepairType('cosmetic');
+                handleInteraction();
+              }}
               className={`p-3 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${repairType === 'cosmetic' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Косметический</span>
               <span className="text-[10px] opacity-70 font-normal leading-tight">Обновление отделки без перепланировки</span>
             </button>
             <button 
-              onClick={() => setRepairType('capital')}
+              onClick={() => {
+                setRepairType('capital');
+                handleInteraction();
+              }}
               className={`p-3 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${repairType === 'capital' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Капитальный</span>
               <span className="text-[10px] opacity-70 font-normal leading-tight">Замена коммуникаций + стяжка</span>
             </button>
             <button 
-              onClick={() => setRepairType('design')}
+              onClick={() => {
+                setRepairType('design');
+                handleInteraction();
+              }}
               className={`p-3 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${repairType === 'design' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Дизайнерский</span>

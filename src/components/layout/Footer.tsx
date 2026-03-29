@@ -28,16 +28,16 @@ const Footer: React.FC = () => {
               <li><HashScrollLinkButton to="services" className="hover:text-accent transition-colors">Цены</HashScrollLinkButton></li>
               <li><HashScrollLinkButton to="stages" className="hover:text-accent transition-colors">Этапы работ</HashScrollLinkButton></li>
               <li><HashScrollLinkButton to="portfolio" className="hover:text-accent transition-colors">Портфолио</HashScrollLinkButton></li>
-              <li><a href="/Flat/calculator" className="hover:text-accent transition-colors">Калькулятор</a></li>
-              <li><a href="/Flat/blog" className="hover:text-accent transition-colors">Блог о ремонте</a></li>
+              <li><a href="/calculator" className="hover:text-accent transition-colors">Калькулятор</a></li>
+              <li><a href="/blog" className="hover:text-accent transition-colors">Блог о ремонте</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold mb-6">Услуги</h4>
             <ul className="space-y-4 text-sm text-white/50">
-              <li><a href="/Flat/kosmeticheskiy-remont" className="hover:text-accent transition-colors">Косметический ремонт</a></li>
-              <li><a href="/Flat/remont-novostroek" className="hover:text-accent transition-colors">Ремонт новостроек</a></li>
+              <li><a href="/kosmeticheskiy-remont" className="hover:text-accent transition-colors">Косметический ремонт</a></li>
+              <li><a href="/remont-novostroek" className="hover:text-accent transition-colors">Ремонт новостроек</a></li>
               <li><HashScrollLinkButton to="calculator" className="hover:text-accent transition-colors">Капитальный ремонт</HashScrollLinkButton></li>
               <li><HashScrollLinkButton to="calculator" className="hover:text-accent transition-colors">Дизайн интерьера</HashScrollLinkButton></li>
             </ul>
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
             {/* Юридические данные будут добавлены позже */}
           </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
-            <a href="/Flat/privacy" className="hover:text-white transition-colors">Политика обработки персональных данных</a>
+            <a href="/privacy" className="hover:text-white transition-colors">Политика обработки персональных данных</a>
             <span className="cursor-default text-white/30">Пользовательское соглашение</span>
           </div>
         </div>

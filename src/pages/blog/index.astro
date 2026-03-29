@@ -26,12 +26,12 @@ const sortedPosts = posts.sort((a, b) => new Date(b.data.date).getTime() - new D
           const cleanId = post.id.replace(/\.md$/, '');
           return (
             <a 
-              href={`/Flat/blog/${cleanId}`} 
+              href={`/blog/${cleanId}`} 
               class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col h-full"
             >
               <div class="relative aspect-[16/10] overflow-hidden">
                 <img 
-                  src={`/Flat/posts/${cleanId}.png`} 
+                  src={`/posts/${cleanId}.png`} 
                   alt={post.data.title}
                   class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />

@@ -21,8 +21,8 @@ const Hero: React.FC = () => {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Левая часть */}
           <div className="lg:col-span-7 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
-              Ремонт квартир <span className="italic font-serif text-accent">без посредников</span>
+            <h1 className="text-3xl xs:text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
+              Ремонт квартир <span className="italic font-serif text-accent break-keep">без посредников</span>
             </h1>
             <p className="text-lg text-white/80 mb-10 leading-relaxed">
               Честные цены по рынку Екатеринбурга. От черновой отделки в новостройке до капитального ремонта вторички. Точная смета до начала работ.

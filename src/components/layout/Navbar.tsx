@@ -16,15 +16,15 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isSolid = isScrolled || (pathname !== '/Flat' && pathname !== '/Flat/') || isMobileMenuOpen;
+  const isSolid = isScrolled || (pathname !== '/Flat' && pathname !== '/') || isMobileMenuOpen;
 
   const navLinks = [
-    { name: 'Услуги', href: '/Flat/#services' },
-    { name: 'Этапы', href: '/Flat/#stages' },
-    { name: 'Портфолио', href: '/Flat/#portfolio' },
-    { name: 'Калькулятор', href: '/Flat/calculator' },
-    { name: 'Блог', href: '/Flat/blog' },
-    { name: 'Контакты', href: '/Flat/#contact' },
+    { name: 'Услуги', href: '/#services' },
+    { name: 'Этапы', href: '/#stages' },
+    { name: 'Портфолио', href: '/#portfolio' },
+    { name: 'Калькулятор', href: '/calculator' },
+    { name: 'Блог', href: '/blog' },
+    { name: 'Контакты', href: '/#contact' },
   ];
 
   const handleLinkClick = () => {
@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
     <>
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isSolid ? 'bg-white shadow-md py-3 lg:py-4' : 'bg-transparent py-4 lg:py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center w-full">
-          <a href="/Flat/" className="flex items-center gap-2 z-50 relative min-w-0">
+          <a href="/" className="flex items-center gap-2 z-50 relative min-w-0">
             <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg shrink-0">
               <Hammer className="text-white w-6 h-6" />
             </div>

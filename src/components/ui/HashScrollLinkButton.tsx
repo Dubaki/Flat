@@ -13,10 +13,10 @@ const HashScrollLinkButton: React.FC<HashScrollLinkButtonProps> = ({ to, classNa
     if (onClick) onClick();
     
     const pathname = window.location.pathname;
-    const isHomePage = pathname === '/Flat' || pathname === '/Flat/';
+    const isHomePage = pathname === '/Flat' || pathname === '/';
 
     if (!isHomePage) {
-      window.location.href = `/Flat/#${to}`;
+      window.location.href = `/#${to}`;
     } else {
       const element = document.getElementById(to);
       if (element) {
@@ -28,7 +28,7 @@ const HashScrollLinkButton: React.FC<HashScrollLinkButtonProps> = ({ to, classNa
   };
 
   return (
-    <a href={`/Flat/#${to}`} onClick={handleClick} className={className}>
+    <a href={`/#${to}`} onClick={handleClick} className={className}>
       {children}
     </a>
   );

@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import LeadMagnet from './LeadMagnet';
+import { reachGoal } from '../../utils/metrica';
 
 const BathroomCalc: React.FC = () => {
   const [type, setType] = useState<'combined' | 'separate'>('combined');
   const [area, setArea] = useState<number>(4);
   const [showerType, setShowerType] = useState<'standard' | 'tile'>('standard');
   const [toiletType, setToiletType] = useState<'standard' | 'installation'>('installation');
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  const handleInteraction = () => {
+    if (!hasInteracted) {
+      reachGoal('calc_interacted');
+      setHasInteracted(true);
+    }
+  };
 
   const baseRate = type === 'combined' ? 175000 : 210000;
   const areaRate = area * 22000;
   const showerExtra = showerType === 'tile' ? 45000 : 0;
-  const toiletExtra = toiletType === 'installation' ? 25000 : 0;
+  const toiletExtra = toiletType === 'installation' ? 15000 : 0;
 
   const totalWorkCost = baseRate + areaRate + showerExtra + toiletExtra;
   const materialsCost = Math.round(totalWorkCost * 0.6); // Материалы для санузла дороже
@@ -40,13 +49,19 @@ const BathroomCalc: React.FC = () => {
             <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Тип санузла</label>
             <div className="grid grid-cols-2 gap-3">
               <button 
-                onClick={() => setType('combined')}
+                onClick={() => {
+                  setType('combined');
+                  handleInteraction();
+                }}
                 className={`py-3 px-2 rounded-xl border-2 font-semibold transition-all text-xs ${type === 'combined' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
               >
                 Совмещенный
               </button>
               <button 
-                onClick={() => setType('separate')}
+                onClick={() => {
+                  setType('separate');
+                  handleInteraction();
+                }}
                 className={`py-3 px-2 rounded-xl border-2 font-semibold transition-all text-xs ${type === 'separate' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
               >
                 Раздельный
@@ -58,7 +73,10 @@ const BathroomCalc: React.FC = () => {
             <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Площадь (м²)</label>
             <input 
               type="number" min="2" max="15" value={area}
-              onChange={(e) => setArea(Number(e.target.value))}
+              onChange={(e) => {
+                setArea(Number(e.target.value));
+                handleInteraction();
+              }}
               className="w-full py-3 px-4 rounded-xl border-2 border-slate-100 focus:border-accent focus:outline-none transition-all font-semibold text-slate-700"
             />
           </div>
@@ -68,14 +86,20 @@ const BathroomCalc: React.FC = () => {
           <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Душевая зона</label>
           <div className="grid grid-cols-2 gap-4">
             <button 
-              onClick={() => setShowerType('standard')}
+              onClick={() => {
+                setShowerType('standard');
+                handleInteraction();
+              }}
               className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${showerType === 'standard' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Ванна / Кабина</span>
               <span className="text-[10px] opacity-70 font-normal">Стандартная установка</span>
             </button>
             <button 
-              onClick={() => setShowerType('tile')}
+              onClick={() => {
+                setShowerType('tile');
+                handleInteraction();
+              }}
               className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${showerType === 'tile' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Из плитки</span>
@@ -88,14 +112,20 @@ const BathroomCalc: React.FC = () => {
           <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Тип унитаза</label>
           <div className="grid grid-cols-2 gap-4">
             <button 
-              onClick={() => setToiletType('standard')}
+              onClick={() => {
+                setToiletType('standard');
+                handleInteraction();
+              }}
               className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${toiletType === 'standard' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Напольный</span>
               <span className="text-[10px] opacity-70 font-normal">Классический вариант</span>
             </button>
             <button 
-              onClick={() => setToiletType('installation')}
+              onClick={() => {
+                setToiletType('installation');
+                handleInteraction();
+              }}
               className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${toiletType === 'installation' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
             >
               <span className="text-sm">Инсталляция</span>

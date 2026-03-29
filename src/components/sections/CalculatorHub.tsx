@@ -3,6 +3,7 @@ import GlobalCalc from '../calculators/GlobalCalc';
 import BathroomCalc from '../calculators/BathroomCalc';
 import RoughCalc from '../calculators/RoughCalc';
 import { Home, Bath, Drill } from 'lucide-react';
+import { reachGoal } from '../../utils/metrica';
 
 const CalculatorHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'global' | 'bathroom' | 'rough' | null>(null);
@@ -35,7 +36,7 @@ const CalculatorHub: React.FC = () => {
     <section id="calculator" className="section-padding bg-slate-50 w-full min-h-[400px]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-slate-900">
             {activeTab ? 'Ваш расчет' : 'Выберите тип расчета'}
           </h2>
           <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
@@ -55,7 +56,10 @@ const CalculatorHub: React.FC = () => {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  reachGoal(`calc_${tab.id}_opened`);
+                }}
                 className={`group relative flex flex-col items-start p-6 md:p-8 rounded-3xl border-2 transition-all duration-300 text-left ${
                   isActive 
                     ? 'border-accent bg-white shadow-xl ring-4 ring-accent/5 translate-y-[-4px]' 

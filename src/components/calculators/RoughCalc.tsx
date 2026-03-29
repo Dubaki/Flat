@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import LeadMagnet from './LeadMagnet';
+import { reachGoal } from '../../utils/metrica';
 
 const RoughCalc: React.FC = () => {
   const [area, setArea] = useState<number>(50);
   const [electricPoints, setElectricPoints] = useState<number>(40);
   const [plumbingType, setPlumbingType] = useState<'base' | 'collector'>('collector');
   const [wallType, setWallType] = useState<'visual' | 'beacons'>('beacons');
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  const handleInteraction = () => {
+    if (!hasInteracted) {
+      reachGoal('calc_interacted');
+      setHasInteracted(true);
+    }
+  };
 
   const roughWorkRate = 7500;
   const electricRate = electricPoints * 1500;
@@ -44,7 +53,10 @@ const RoughCalc: React.FC = () => {
             </div>
             <input 
               type="range" min="20" max="150" step="1" value={area}
-              onChange={(e) => setArea(Number(e.target.value))}
+              onChange={(e) => {
+                setArea(Number(e.target.value));
+                handleInteraction();
+              }}
               className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent"
             />
           </div>
@@ -56,7 +68,10 @@ const RoughCalc: React.FC = () => {
             </div>
             <input 
               type="range" min="10" max="150" step="5" value={electricPoints}
-              onChange={(e) => setElectricPoints(Number(e.target.value))}
+              onChange={(e) => {
+                setElectricPoints(Number(e.target.value));
+                handleInteraction();
+              }}
               className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent"
             />
           </div>
@@ -66,14 +81,20 @@ const RoughCalc: React.FC = () => {
               <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Разводка труб</label>
               <div className="flex flex-col gap-3">
                 <button 
-                  onClick={() => setPlumbingType('base')}
+                  onClick={() => {
+                    setPlumbingType('base');
+                    handleInteraction();
+                  }}
                   className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${plumbingType === 'base' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
                 >
                   <span className="text-sm">Тройниковая</span>
                   <span className="text-[10px] opacity-70 font-normal text-slate-400 text-balance">Последовательная (базовая)</span>
                 </button>
                 <button 
-                  onClick={() => setPlumbingType('collector')}
+                  onClick={() => {
+                    setPlumbingType('collector');
+                    handleInteraction();
+                  }}
                   className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${plumbingType === 'collector' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
                 >
                   <span className="text-sm">Коллекторная</span>
@@ -86,14 +107,20 @@ const RoughCalc: React.FC = () => {
               <label className="font-bold text-slate-800 block mb-3 text-sm uppercase tracking-wider">Стены</label>
               <div className="flex flex-col gap-3">
                 <button 
-                  onClick={() => setWallType('visual')}
+                  onClick={() => {
+                    setWallType('visual');
+                    handleInteraction();
+                  }}
                   className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${wallType === 'visual' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
                 >
                   <span className="text-sm">Визуально</span>
                   <span className="text-[10px] opacity-70 font-normal text-slate-400 text-balance">Плоские стены без геометрии</span>
                 </button>
                 <button 
-                  onClick={() => setWallType('beacons')}
+                  onClick={() => {
+                    setWallType('beacons');
+                    handleInteraction();
+                  }}
                   className={`p-4 rounded-xl border-2 font-semibold transition-all text-left flex flex-col gap-1 ${wallType === 'beacons' ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-500 hover:border-slate-200'}`}
                 >
                   <span className="text-sm">По маякам</span>
@@ -121,7 +148,7 @@ const RoughCalc: React.FC = () => {
             Единичные расценки 2026
             <span className="w-8 h-[1px] bg-slate-200"></span>
           </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-xs text-slate-600">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-xs text-slate-600">
             <div className="space-y-2">
               <p className="font-bold text-slate-800 uppercase tracking-tight text-[10px]">Электрика</p>
               <p className="flex justify-between border-b border-slate-100 pb-1">Монтаж точки <span>1 500 ₽</span></p>
