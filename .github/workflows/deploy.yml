@@ -5,8 +5,8 @@ on:
     branches:
       - main
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Убирает предупреждения о версии Node.js
+permissions:
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -18,12 +18,12 @@ jobs:
       - name: 🔧 Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🏗️ Build project
         run: npm run build
