@@ -38,4 +38,4 @@ jobs:
           local_path: dist/
           remote_path: ${{ secrets.FTP_REMOTE_DIR }}
           sftp_only: true
-          delete_remote_files: true
+          delete_remote_files: false
