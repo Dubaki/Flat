@@ -31,8 +31,8 @@ export const generateCalculatorPDF = async (data: PDFData) => {
       startY: 45,
       head: [['Параметр объекта', 'Значение']],
       body: data.parameters,
-      styles: { font: 'Roboto' },
-      headStyles: { fillColor: [37, 99, 235], font: 'Roboto' },
+      styles: { font: 'Roboto', fontStyle: 'normal' },
+      headStyles: { fillColor: [37, 99, 235], font: 'Roboto', fontStyle: 'normal' },
     });
 
     const lastY = (doc as any).lastAutoTable?.finalY || 100;
@@ -41,10 +41,10 @@ export const generateCalculatorPDF = async (data: PDFData) => {
       startY: lastY + 10,
       head: [['Категория расходов', 'Сумма']],
       body: data.costs,
-      styles: { font: 'Roboto' },
-      headStyles: { fillColor: [30, 41, 59], font: 'Roboto' },
+      styles: { font: 'Roboto', fontStyle: 'normal' },
+      headStyles: { fillColor: [30, 41, 59], font: 'Roboto', fontStyle: 'normal' },
       foot: [['ИТОГО', data.total]],
-      footStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], font: 'Roboto' }
+      footStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], font: 'Roboto', fontStyle: 'normal' }
     });
 
     const finalY = (doc as any).lastAutoTable?.finalY + 20;
