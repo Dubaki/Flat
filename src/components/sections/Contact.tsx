@@ -39,7 +39,7 @@ const Contact: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/lead', {
+      const response = await fetch('/api/lead.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone, address, type: 'contact' }),

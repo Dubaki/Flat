@@ -75,7 +75,7 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
     };
 
     try {
-      const response = await fetch('/api/lead', {
+      const response = await fetch('/api/lead.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leadData),
