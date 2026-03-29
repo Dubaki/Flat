@@ -33,7 +33,13 @@ const RoughCalc: React.FC = () => {
       ['Разводка труб', plumbingType === 'base' ? 'Тройниковая (базовая)' : 'Коллекторная (надежная)'],
       ['Выравнивание стен', wallType === 'visual' ? 'Визуальное' : 'По маякам (углы 90°)']
     ] as [string, string][],
-    fileName: `smeta_rough_${area}m2.pdf`
+    fileName: `smeta_rough_${area}m2.pdf`,
+    calcType: 'rough' as const,
+    area,
+    electricPoints,
+    plumbingType,
+    wallType,
+    totalWorkCost,
   };
 
   const costs = [

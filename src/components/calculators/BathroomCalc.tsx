@@ -33,7 +33,13 @@ const BathroomCalc: React.FC = () => {
       ['Душевая зона', showerType === 'standard' ? 'Ванна/кабина' : 'Душевая из плитки'],
       ['Унитаз', toiletType === 'standard' ? 'Напольный' : 'Инсталляция']
     ] as [string, string][],
-    fileName: `smeta_bathroom_${area}m2.pdf`
+    fileName: `smeta_bathroom_${area}m2.pdf`,
+    calcType: 'bathroom' as const,
+    bathroomType: type,
+    bathroomArea: area,
+    showerType,
+    toiletType,
+    totalWorkCost,
   };
 
   const costs = [

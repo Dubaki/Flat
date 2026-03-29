@@ -30,14 +30,20 @@ const GlobalCalc: React.FC = () => {
   const totalEstimated = totalWorkCost + roughMaterialsCost;
 
   const pdfData = {
-    title: 'СМЕТА: Вся квартира (Глобальный расчет)',
+    title: 'СМЕТА: Ремонт квартиры под ключ',
     parameters: [
       ['Площадь', `${area} м²`],
       ['Тип жилья', buildingType === 'new' ? 'Новостройка' : 'Вторичка'],
       ['Кол-во санузлов', bathrooms >= 3 ? '3+' : bathrooms.toString()],
       ['Вид ремонта', repairType === 'cosmetic' ? 'Косметический' : repairType === 'capital' ? 'Капитальный' : 'Дизайнерский']
     ] as [string, string][],
-    fileName: `smeta_flat_${area}m2.pdf`
+    fileName: `smeta_flat_${area}m2.pdf`,
+    calcType: 'global' as const,
+    area,
+    repairType,
+    buildingType,
+    bathrooms,
+    totalWorkCost,
   };
 
   const costs = [
