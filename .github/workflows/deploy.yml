@@ -15,7 +15,7 @@ jobs:
       - name: 🔧 Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
           cache-dependency-path: Flat/package-lock.json
 
@@ -37,4 +37,4 @@ jobs:
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
           protocol: sftp
           port: 22
-          delete-destination: false # Не удалять файлы на сервере, которых нет в dist (безопаснее)
+          delete-destination: false
