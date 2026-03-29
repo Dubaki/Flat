@@ -40,7 +40,7 @@ const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({ project }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       ref={containerRef}
-      className="group relative overflow-hidden rounded-3xl aspect-[16/10] bg-slate-800 cursor-ew-resize select-none"
+      className="group relative overflow-hidden rounded-3xl aspect-[4/3] sm:aspect-[16/10] bg-slate-800 cursor-ew-resize select-none"
       onMouseMove={handleMove}
       onTouchMove={handleMove}
     >
@@ -88,11 +88,11 @@ const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({ project }) => {
       </div>
 
       {/* Project Info Overlay */}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent p-8 flex flex-col justify-end z-30 pointer-events-none">
-        <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-          <h4 className="text-white text-2xl font-bold mb-2">{project.title}</h4>
-          <p className="text-slate-300 text-sm mb-3">{project.type}</p>
-          <div className="inline-block whitespace-nowrap bg-accent text-white px-3 py-1 rounded-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent p-4 sm:p-8 flex flex-col justify-end z-30 pointer-events-none">
+        <div className="sm:translate-y-4 sm:group-hover:translate-y-0 transition-transform duration-300">
+          <h4 className="text-white text-base sm:text-2xl font-bold mb-1 sm:mb-2">{project.title}</h4>
+          <p className="text-slate-300 text-xs sm:text-sm mb-2 sm:mb-3">{project.type}</p>
+          <div className="inline-block whitespace-nowrap bg-accent text-white px-3 py-1 rounded-lg text-xs sm:text-sm font-bold sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 delay-100">
             {project.price}
           </div>
         </div>
