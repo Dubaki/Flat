@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "prebuild": "node scripts/generate-blog-index.js",
-    "postbuild": "echo. > dist/.nojekyll",
+    "postbuild": "touch dist/.nojekyll",
     "predeploy": "npm run build",
     "deploy": "gh-pages -t -d dist",
     "clean": "rm -rf dist",
