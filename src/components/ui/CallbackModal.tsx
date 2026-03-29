@@ -153,7 +153,7 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
                     className="mt-1 w-4 h-4 rounded border-slate-300 text-accent focus:ring-accent accent-accent shrink-0"
                   />
                   <label htmlFor="privacy-modal" className="text-[9px] text-slate-400 leading-tight cursor-pointer">
-                    Я согласен на обработку персональных данных в соответствии с <a href="/Flat/privacy" target="_blank" className="text-accent underline hover:text-accent/80 transition-colors">политикой конфиденциальности</a>
+                    Я согласен на обработку персональных данных в соответствии с <a href="/privacy" target="_blank" className="text-accent underline hover:text-accent/80 transition-colors">политикой конфиденциальности</a>
                   </label>
                 </div>
               </form>

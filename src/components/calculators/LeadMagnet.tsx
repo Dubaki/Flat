@@ -150,7 +150,7 @@ const LeadMagnet: React.FC<LeadMagnetProps> = ({ totalEstimated, costs, pdfData,
                   className="mt-1 w-4 h-4 rounded border-white/10 bg-white/5 text-accent focus:ring-accent accent-accent shrink-0"
                 />
                 <label htmlFor="privacy-calc" className="text-[10px] text-white/50 leading-tight cursor-pointer">
-                  Я согласен на обработку персональных данных в соответствии с <a href="/Flat/privacy" target="_blank" className="text-white/70 underline hover:text-accent transition-colors">политикой конфиденциальности</a>
+                  Я согласен на обработку персональных данных в соответствии с <a href="/privacy" target="_blank" className="text-white/70 underline hover:text-accent transition-colors">политикой конфиденциальности</a>
                 </label>
               </div>
 

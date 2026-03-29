@@ -6,7 +6,7 @@ const CosmeticRepair = () => {
     <div className="pt-24 min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-8">
-          <a href="/Flat/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2">
+          <a href="/" className="text-accent hover:underline text-sm font-medium flex items-center gap-2">
             ← На главную
           </a>
         </div>
@@ -29,7 +29,7 @@ const CosmeticRepair = () => {
                 <div className="text-xl sm:text-2xl font-bold text-slate-800">от 14 дней</div>
               </div>
             </div>
-            <a href="/Flat/calculator" className="inline-block bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">
+            <a href="/calculator" className="inline-block bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all shadow-xl shadow-accent/20">
               Рассчитать стоимость
             </a>
           </div>
