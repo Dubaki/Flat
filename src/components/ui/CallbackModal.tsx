@@ -46,7 +46,7 @@ const CallbackModal: React.FC<CallbackModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      const response = await fetch('/api/lead.php', {
+      const response = await fetch('/lead.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone, type: 'callback' }),
