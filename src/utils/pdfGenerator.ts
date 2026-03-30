@@ -15,6 +15,7 @@ export interface PDFData {
   repairType?: 'cosmetic' | 'capital' | 'design';
   buildingType?: 'new' | 'old';
   bathrooms?: number;
+  bathroomArea?: number;
   bathroomType?: 'combined' | 'separate';
   showerType?: 'standard' | 'tile';
   toiletType?: 'standard' | 'installation';

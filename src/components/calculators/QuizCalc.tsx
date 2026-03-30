@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ChevronLeft, Check, Gift, Shield, FileText, Info, ChevronDown, Plus, Minus } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, Gift, Shield, FileText, Info, ChevronDown, Plus, Minus, Download } from 'lucide-react';
 import { reachGoal } from '../../utils/metrica';
+import { generateCalculatorPDF } from '../../utils/pdfGenerator';
 
 type QuizType = 'apartment' | 'bathroom' | 'engineering';
 type RepairType = 'cosmetic' | 'capital' | 'design';
@@ -267,6 +268,77 @@ const QuizCalc: React.FC = () => {
     const message = `🎯 КВИЗ — ${QUIZ_TYPES.find(t => t.id === type)?.label}\n${params}\nДоп: ${worksList || 'нет'}\nРаботы: ${fmt(result.work)} ₽ | Материалы: ${fmt(result.mat)} ₽ | Итого: ${fmt(result.total)} ₽`;
     try { await fetch('/lead.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, phone, message }) }); } catch {}
     setSubmitted(true); setSubmitting(false);
+  };
+
+  // ── PDF download ──────────────────────────────────────────
+  const handleDownloadPDF = async () => {
+    reachGoal('pdf_downloaded');
+    const r = calcResult();
+    let pdfData;
+    if (type === 'apartment') {
+      pdfData = {
+        title: 'СМЕТА: Ремонт квартиры под ключ',
+        phone,
+        parameters: [
+          ['Площадь', `${area} м²`],
+          ['Тип жилья', buildingType === 'new' ? 'Новостройка' : 'Вторичка'],
+          ['Вид ремонта', REPAIR_RATES[repairType].label],
+          ['Санузлов', String(bathrooms)],
+        ] as [string, string][],
+        costs: [
+          ['Стоимость работ', `${r.work.toLocaleString('ru-RU')} ₽`],
+          ['Черновые материалы', `${r.mat.toLocaleString('ru-RU')} ₽`],
+        ] as [string, string][],
+        total: `${r.total.toLocaleString('ru-RU')} ₽`,
+        fileName: `smeta_kvartira_${area}m2.pdf`,
+        calcType: 'global' as const,
+        area, repairType, buildingType, bathrooms,
+        totalWorkCost: r.work,
+      };
+    } else if (type === 'bathroom') {
+      pdfData = {
+        title: 'СМЕТА: Ремонт санузла',
+        phone,
+        parameters: [
+          ['Площадь', `${bathroomArea} м²`],
+          ['Тип санузла', bathroomVariant === 'combined' ? 'Совмещённый' : 'Раздельный'],
+          ['Душевая зона', showerType === 'tile' ? 'Из керамогранита' : 'Ванна / кабина'],
+          ['Унитаз', toiletType === 'installation' ? 'Инсталляция' : 'Напольный'],
+        ] as [string, string][],
+        costs: [
+          ['Стоимость работ', `${r.work.toLocaleString('ru-RU')} ₽`],
+          ['Материалы', `${r.mat.toLocaleString('ru-RU')} ₽`],
+        ] as [string, string][],
+        total: `${r.total.toLocaleString('ru-RU')} ₽`,
+        fileName: `smeta_sanuzel_${bathroomArea}m2.pdf`,
+        calcType: 'bathroom' as const,
+        area: bathroomArea, bathroomArea, showerType, toiletType,
+        bathroomType: bathroomVariant,
+        totalWorkCost: r.work,
+      };
+    } else {
+      pdfData = {
+        title: 'СМЕТА: Инженерные работы',
+        phone,
+        parameters: [
+          ['Площадь', `${engArea} м²`],
+          ['Точек электрики', String(electricPoints)],
+          ['Разводка сантехники', plumbingType === 'collector' ? 'Коллекторная' : 'Тройниковая'],
+          ['Штукатурка стен', wallType === 'beacons' ? 'По маякам' : 'Визуально'],
+        ] as [string, string][],
+        costs: [
+          ['Стоимость работ', `${r.work.toLocaleString('ru-RU')} ₽`],
+          ['Материалы', `${r.mat.toLocaleString('ru-RU')} ₽`],
+        ] as [string, string][],
+        total: `${r.total.toLocaleString('ru-RU')} ₽`,
+        fileName: `smeta_inzheneriya_${engArea}m2.pdf`,
+        calcType: 'rough' as const,
+        area: engArea, electricPoints, plumbingType, wallType,
+        totalWorkCost: r.work,
+      };
+    }
+    const ok = await generateCalculatorPDF(pdfData);
+    if (!ok) alert('Ошибка при генерации PDF');
   };
 
   // ── Rate spoiler content ──────────────────────────────────
@@ -674,7 +746,12 @@ const QuizCalc: React.FC = () => {
                     <Check className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-1">Бонусы зафиксированы!</h3>
-                  <p className="text-slate-500 text-sm">Мастер наберёт вас в течение <strong>15 минут</strong>.</p>
+                  <p className="text-slate-500 text-sm mb-5">Мастер наберёт вас в течение <strong>15 минут</strong>.</p>
+                  <button onClick={handleDownloadPDF}
+                    className="w-full bg-accent text-white py-3.5 rounded-2xl font-bold hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                    <Download className="w-5 h-5" />
+                    Скачать подробную смету (PDF)
+                  </button>
                 </motion.div>
               )}
 
