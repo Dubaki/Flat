@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero';
+import QuizCTA from '../components/sections/QuizCTA';
 import Services from '../components/sections/Services';
 import Stages from '../components/sections/Stages';
 import CalculatorHub from '../components/sections/CalculatorHub';
@@ -13,6 +14,7 @@ import Contact from '../components/sections/Contact';
 	description="Профессиональный ремонт квартир в Екатеринбурге без посредников. Косметический от 7500 ₽/м², капитальный от 14500 ₽/м². Точная смета, договор, гарантия 3 года."
 >
 	<Hero client:load />
+	<QuizCTA client:visible />
 	<section id="services">
 		<Services client:visible />
 	</section>
