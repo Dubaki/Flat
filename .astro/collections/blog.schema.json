@@ -11,7 +11,13 @@
     "date": {
       "type": "string"
     },
+    "pubDate": {
+      "type": "string"
+    },
     "author": {
+      "type": "string"
+    },
+    "image": {
       "type": "string"
     },
     "$schema": {

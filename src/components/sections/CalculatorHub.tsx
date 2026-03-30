@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import GlobalCalc from '../calculators/GlobalCalc';
 import BathroomCalc from '../calculators/BathroomCalc';
 import RoughCalc from '../calculators/RoughCalc';
@@ -7,6 +7,7 @@ import { reachGoal } from '../../utils/metrica';
 
 const CalculatorHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'global' | 'bathroom' | 'rough' | null>(null);
+  const calcRef = useRef<HTMLDivElement>(null);
 
   const tabs = [
     { 
@@ -59,6 +60,7 @@ const CalculatorHub: React.FC = () => {
                 onClick={() => {
                   setActiveTab(tab.id);
                   reachGoal(`calc_${tab.id}_opened`);
+                  setTimeout(() => calcRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                 }}
                 className={`group relative flex flex-col items-start p-6 md:p-8 rounded-3xl border-2 transition-all duration-300 text-left ${
                   isActive 
@@ -99,7 +101,7 @@ const CalculatorHub: React.FC = () => {
 
         {/* Calculator Content */}
         {activeTab ? (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+          <div ref={calcRef} className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
             {activeTab === 'global' && <GlobalCalc />}
             {activeTab === 'bathroom' && <BathroomCalc />}
             {activeTab === 'rough' && <RoughCalc />}

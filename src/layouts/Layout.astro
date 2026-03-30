@@ -7,9 +7,17 @@ import CookieConsent from '../components/ui/CookieConsent';
 interface Props {
 	title: string;
 	description?: string;
+	image?: string;
 }
 
-const { title, description = "Профессиональный ремонт квартир в Екатеринбурге без посредников." } = Astro.props;
+const {
+	title,
+	description = "Профессиональный ремонт квартир в Екатеринбурге без посредников. Косметический от 7500 ₽/м², капитальный от 14500 ₽/м². Договор, гарантия 3 года.",
+	image = "/og-image.svg"
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, "https://uf66.ru").href;
+const ogImageURL = new URL(image, "https://uf66.ru").href;
 ---
 
 <!doctype html>
@@ -18,16 +26,31 @@ const { title, description = "Профессиональный ремонт кв
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
 		<meta name="google-site-verification" content="roE3luxifAjuSWS7_Oj2uY6kZ6wivAYQyc4OcObYbU4" />
-		
+
 		<!-- Open Graph / Social -->
 		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Дядя Фёдор — ремонт квартир в Екатеринбурге" />
+		<meta property="og:locale" content="ru_RU" />
+		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Дядя Фёдор — ремонт квартир в Екатеринбурге" />
+
+		<!-- Twitter / VK Cards -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+
 		<!-- Yandex.Metrica counter -->
 		<script type="text/javascript" is:inline>
 		   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -36,7 +59,7 @@ const { title, description = "Профессиональный ремонт кв
 		   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
 		   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-		   ym(108280248, "init", { // Замените 108280248 на ваш ID
+		   ym(108280248, "init", {
 				clickmap:true,
 				trackLinks:true,
 				accurateTrackBounce:true,
@@ -45,15 +68,16 @@ const { title, description = "Профессиональный ремонт кв
 		</script>
 		<noscript><div><img src="https://mc.yandex.ru/watch/108280248" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 		<!-- /Yandex.Metrica counter -->
-		
+
 		<!-- Schema.org Markup -->
 		<script type="application/ld+json" is:inline>
 		{
 			"@context": "https://schema.org",
 			"@type": "HomeAndConstructionBusiness",
 			"name": "Дядя Фёдор",
-			"description": "Ремонт квартир в Екатеринбурге без посредников.",
-			"telephone": "8-922-18-00-911",
+			"url": "https://uf66.ru",
+			"description": "Ремонт квартир в Екатеринбурге без посредников. Капитальный, косметический и дизайнерский ремонт. Гарантия 3 года по договору.",
+			"telephone": "+7-922-18-00-911",
 			"email": "3536246@gmail.com",
 			"address": {
 				"@type": "PostalAddress",
@@ -61,8 +85,81 @@ const { title, description = "Профессиональный ремонт кв
 				"addressRegion": "Свердловская область",
 				"addressCountry": "RU"
 			},
-			"priceRange": "от 7500 RUB",
-			"areaServed": "Екатеринбург"
+			"geo": {
+				"@type": "GeoCoordinates",
+				"latitude": 56.838011,
+				"longitude": 60.597474
+			},
+			"openingHoursSpecification": [
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+					"opens": "09:00",
+					"closes": "20:00"
+				},
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": ["Saturday"],
+					"opens": "10:00",
+					"closes": "18:00"
+				}
+			],
+			"priceRange": "от 7500 ₽/м²",
+			"currenciesAccepted": "RUB",
+			"paymentAccepted": "Наличные, банковский перевод",
+			"areaServed": {
+				"@type": "City",
+				"name": "Екатеринбург"
+			},
+			"image": "https://uf66.ru/og-image.svg",
+			"hasOfferCatalog": {
+				"@type": "OfferCatalog",
+				"name": "Услуги ремонта квартир",
+				"itemListElement": [
+					{
+						"@type": "Offer",
+						"itemOffered": {
+							"@type": "Service",
+							"name": "Косметический ремонт",
+							"description": "Обновление отделки без перепланировки"
+						},
+						"priceSpecification": {
+							"@type": "UnitPriceSpecification",
+							"price": "7500",
+							"priceCurrency": "RUB",
+							"unitText": "м²"
+						}
+					},
+					{
+						"@type": "Offer",
+						"itemOffered": {
+							"@type": "Service",
+							"name": "Капитальный ремонт",
+							"description": "Замена коммуникаций, стяжка, полная отделка"
+						},
+						"priceSpecification": {
+							"@type": "UnitPriceSpecification",
+							"price": "14500",
+							"priceCurrency": "RUB",
+							"unitText": "м²"
+						}
+					},
+					{
+						"@type": "Offer",
+						"itemOffered": {
+							"@type": "Service",
+							"name": "Дизайнерский ремонт",
+							"description": "Авторский проект и надзор"
+						},
+						"priceSpecification": {
+							"@type": "UnitPriceSpecification",
+							"price": "22000",
+							"priceCurrency": "RUB",
+							"unitText": "м²"
+						}
+					}
+				]
+			}
 		}
 		</script>
 	</head>

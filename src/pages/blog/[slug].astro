@@ -21,9 +21,10 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const cleanId = post.id.replace(/\.md$/, '');
+const ogImage = post.data.image || `/posts/${cleanId}.png`;
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout title={post.data.title} description={post.data.description} image={ogImage}>
   <div class="pt-32 pb-20 bg-white min-h-screen">
     <article class="max-w-4xl mx-auto px-6">
       <div class="mb-12">
@@ -66,6 +67,7 @@ const cleanId = post.id.replace(/\.md$/, '');
 
       {/* Conditional rendering for calculators */}
       {cleanId === '1' && <div class="my-16"><GlobalCalc client:visible /></div>}
+      {cleanId === '5prob' && <div class="my-16"><GlobalCalc client:visible /></div>}
       {cleanId === 'remont-vannoy-ekaterinburg' && <div class="my-16"><BathroomCalc client:visible /></div>}
       {cleanId === 'nevidm' && <div class="my-16"><RoughCalc client:visible /></div>}
 

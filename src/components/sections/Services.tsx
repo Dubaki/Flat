@@ -80,6 +80,16 @@ const Services: React.FC = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Geo coverage */}
+        <div className="border-t border-slate-200 pt-8 text-center">
+          <p className="text-xs text-slate-400 uppercase tracking-widest mb-3">Работаем во всех районах Екатеринбурга</p>
+          <div className="flex flex-wrap justify-center gap-2 text-xs text-slate-500">
+            {['Академический', 'Широкая Речка', 'ЖК Солнечный', 'Ботанический', 'ВИЗ', 'Уралмаш', 'Пионерский', 'Юг Центр', 'ЖК Новокольцовский', 'ЖК Преображенский', 'ЖК Макаровский', 'Центр'].map((district) => (
+              <span key={district} className="bg-white border border-slate-100 px-3 py-1 rounded-full">{district}</span>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

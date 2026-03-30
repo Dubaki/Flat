@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
               Ремонт квартир <span className="italic font-serif text-accent break-keep">без посредников</span>
             </h1>
             <p className="text-lg text-white/80 mb-10 leading-relaxed">
-              Честные цены по рынку Екатеринбурга. От черновой отделки в новостройке до капитального ремонта вторички. Точная смета до начала работ.
+              Честные цены по рынку Екатеринбурга. От черновой отделки в новостройках Академического, Широкой Речки и Солнечного — до капитального ремонта вторички в любом районе города. Точная смета до начала работ.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <HashScrollLinkButton to="calculator" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
