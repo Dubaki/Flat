@@ -25,13 +25,13 @@ const Hero: React.FC = () => {
               Ремонт квартир <span className="italic font-serif text-accent break-keep">без посредников</span>
             </h1>
             <p className="text-lg text-white/80 mb-10 leading-relaxed">
-              Честные цены по рынку Екатеринбурга. От черновой отделки в новостройках Академического, Широкой Речки и Солнечного — до капитального ремонта вторички в любом районе города. Точная смета до начала работ.
+              Узнайте стоимость ремонта за 1 минуту — результат сразу, без ввода телефона. Квартира, санузел или инженерия: точная смета по вашим параметрам.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <HashScrollLinkButton to="calculator" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
+              <a href="/quiz" className="bg-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group shadow-2xl shadow-accent/30">
                 Рассчитать стоимость
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </HashScrollLinkButton>
+              </a>
               <HashScrollLinkButton to="portfolio" className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                 Смотреть примеры
               </HashScrollLinkButton>
