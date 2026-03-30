@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, Check, Gift, Shield, FileText, Info, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, Gift, Shield, FileText, Info, ChevronDown, Plus, Minus } from 'lucide-react';
 import { reachGoal } from '../../utils/metrica';
 
 type QuizType = 'apartment' | 'bathroom' | 'engineering';
@@ -12,11 +12,84 @@ type ToiletType = 'standard' | 'installation';
 type PlumbingType = 'base' | 'collector';
 type WallType = 'visual' | 'beacons';
 
-const QUIZ_TYPES = [
-  { id: 'apartment',   label: 'Квартира',  desc: 'Косметический, капитальный и дизайнерский ремонт', photo: '/quiz/photo/k1.png' },
-  { id: 'bathroom',    label: 'Санузел',   desc: 'Детальный расчёт: плитка, сантехника, инсталляция', photo: '/quiz/photo/k2.png' },
-  { id: 'engineering', label: 'Инженерия', desc: 'Черновые работы, электрика, надёжная разводка труб', photo: '/quiz/photo/k3.png' },
-] as const;
+// ── Work items with optional quantity ─────────────────
+interface WorkItem {
+  id: string;
+  label: string;
+  unitPrice: number;
+  unit: string;
+  hasQty: boolean;
+  defaultQty: (area: number) => number;
+}
+
+const WORK_ITEMS: Record<string, WorkItem[]> = {
+  apartment_cosmetic: [
+    { id: 'garbage',   label: 'Вывоз строит. мусора',       unitPrice: 5000,  unit: 'кузов', hasQty: true,  defaultQty: () => 2 },
+    { id: 'ceilings',  label: 'Натяжные потолки',            unitPrice: 850,   unit: 'м²',   hasQty: true,  defaultQty: a => a },
+    { id: 'doors',     label: 'Установка дверей',            unitPrice: 3500,  unit: 'шт',   hasQty: true,  defaultQty: () => 3 },
+    { id: 'sockets',   label: 'Замена розеток/выкл.',        unitPrice: 500,   unit: 'точка', hasQty: true, defaultQty: () => 10 },
+    { id: 'balcony',   label: 'Балконное остекление',        unitPrice: 45000, unit: '',      hasQty: false, defaultQty: () => 1 },
+  ],
+  apartment_capital: [
+    { id: 'garbage',   label: 'Вывоз строит. мусора',        unitPrice: 5000,  unit: 'кузов', hasQty: true,  defaultQty: () => 3 },
+    { id: 'ceilings',  label: 'Натяжные потолки',             unitPrice: 850,   unit: 'м²',   hasQty: true,  defaultQty: a => a },
+    { id: 'warm_floor',label: 'Тёплый пол (водяной)',         unitPrice: 1500,  unit: 'м²',   hasQty: true,  defaultQty: a => Math.round(a * 0.5) },
+    { id: 'conditioner',label: 'Кондиционеры',                unitPrice: 18000, unit: 'шт',   hasQty: true,  defaultQty: () => 2 },
+    { id: 'doors',     label: 'Установка дверей',             unitPrice: 3500,  unit: 'шт',   hasQty: true,  defaultQty: () => 4 },
+    { id: 'design',    label: 'Дизайн-проект',                unitPrice: 30000, unit: '',      hasQty: false, defaultQty: () => 1 },
+  ],
+  apartment_design: [
+    { id: 'garbage',   label: 'Вывоз строит. мусора',        unitPrice: 5000,  unit: 'кузов', hasQty: true,  defaultQty: () => 3 },
+    { id: 'supervision',label: 'Авторский надзор',            unitPrice: 500,   unit: 'м²',   hasQty: true,  defaultQty: a => a },
+    { id: 'large_tile',label: 'Крупноформатный керамогранит', unitPrice: 2500,  unit: 'м²',   hasQty: true,  defaultQty: a => Math.round(a * 0.3) },
+    { id: 'hidden_doors',label: 'Скрытые двери',             unitPrice: 35000, unit: 'шт',   hasQty: true,  defaultQty: () => 2 },
+    { id: 'smart_home',label: 'Умный дом (базовый)',          unitPrice: 45000, unit: '',      hasQty: false, defaultQty: () => 1 },
+    { id: 'ceilings',  label: 'Натяжные потолки',             unitPrice: 850,   unit: 'м²',   hasQty: true,  defaultQty: a => a },
+  ],
+  bathroom: [
+    { id: 'warm_floor_b',label: 'Тёплый пол электрический',  unitPrice: 3500,  unit: 'м²',   hasQty: true,  defaultQty: a => a },
+    { id: 'ventilation', label: 'Приточная вентиляция',       unitPrice: 12000, unit: '',      hasQty: false, defaultQty: () => 1 },
+    { id: 'smart_bath',  label: 'Умный санузел',              unitPrice: 20000, unit: '',      hasQty: false, defaultQty: () => 1 },
+    { id: 'extra_sockets',label: 'Доп. розетки (с/у)',       unitPrice: 2500,  unit: 'шт',   hasQty: true,  defaultQty: () => 2 },
+  ],
+  engineering: [
+    { id: 'heating',   label: 'Теплоснабжение',               unitPrice: 35000, unit: '',      hasQty: false, defaultQty: () => 1 },
+    { id: 'ventilation',label: 'Приточно-вытяжная вентиляция',unitPrice: 25000, unit: '',      hasQty: false, defaultQty: () => 1 },
+    { id: 'network',   label: 'Слаботочные сети (интернет, ТВ)', unitPrice: 15000, unit: '',  hasQty: false, defaultQty: () => 1 },
+    { id: 'extra_elec',label: 'Доп. точки электрики',         unitPrice: 1500,  unit: 'шт',   hasQty: true,  defaultQty: () => 10 },
+  ],
+};
+
+// ── Info content ────────────────────────────────────────
+const INFO_INCLUDES = {
+  apartment: {
+    title: 'Что входит в стоимость «Под ключ»',
+    items: [
+      { icon: '🏗', title: 'Подготовка',     desc: 'Демонтаж (вторичка), перегородки, выравнивание под лазерный уровень.' },
+      { icon: '⚡', title: 'Инженерия',      desc: 'Полная разводка электрики и сантехники, сборка щита и коллектора.' },
+      { icon: '✨', title: 'Чистовой этап',  desc: 'Ламинат/кварцвинил, обои или покраска, плинтусы и розетки.' },
+      { icon: '💡', title: 'Потолки и свет', desc: 'Натяжные потолки, светильники и трековые системы.' },
+    ],
+  },
+  bathroom: {
+    title: 'Что включено в санузел «Под ключ»',
+    items: [
+      { icon: '🔲', title: 'Плитка',         desc: 'Керамогранит (2 500 ₽/м²), запил 45°, эпоксидная затирка.' },
+      { icon: '🚰', title: 'Водоподготовка', desc: 'Скрытая разводка, фильтры, редукторы, коллекторный узел.' },
+      { icon: '🛡', title: 'Гидроизоляция',  desc: 'Двухслойная — пол и мокрые зоны стен.' },
+      { icon: '🚿', title: 'Финиш',          desc: 'Ванна/душ, инсталляция, раковина, смесители, гигдуш.' },
+    ],
+  },
+  engineering: {
+    title: 'Фундамент вашего ремонта',
+    items: [
+      { icon: '🔌', title: 'Электрика',      desc: 'Кабель ВВГнг-LS, автомат и реле напряжения на каждую линию.' },
+      { icon: '🚿', title: 'Сантехника',     desc: 'Трубы Rehau/Stout, коллекторная схема без перепадов напора.' },
+      { icon: '📐', title: 'Геометрия',      desc: 'Углы 90° по маякам под кухню и ванну.' },
+      { icon: '🛡', title: 'Скрытые работы', desc: 'Опрессовка систем, шумоизоляция стояков, контроль ГОСТ.' },
+    ],
+  },
+};
 
 const REPAIR_RATES = {
   cosmetic: { rate: 7500,  label: 'Косметический', sub: 'Обновление отделки без перепланировки' },
@@ -24,67 +97,11 @@ const REPAIR_RATES = {
   design:   { rate: 22000, label: 'Дизайнерский',  sub: 'Проект + авторский надзор' },
 };
 
-interface WorkItem { id: string; label: string; fixedPrice: number; perM2: number; unit: string; }
-
-const WORK_ITEMS: Record<string, WorkItem[]> = {
-  apartment_cosmetic: [
-    { id: 'ceilings',     label: 'Натяжные потолки',    fixedPrice: 0,     perM2: 850,  unit: '850 ₽/м²' },
-    { id: 'doors',        label: 'Межкомнатные двери',  fixedPrice: 15000, perM2: 0,    unit: 'от 15 000 ₽/шт' },
-    { id: 'partial_elec', label: 'Электрика частичная', fixedPrice: 25000, perM2: 0,    unit: 'от 25 000 ₽' },
-  ],
-  apartment_capital: [
-    { id: 'design_proj',  label: 'Дизайн-проект',            fixedPrice: 30000, perM2: 0,    unit: 'от 30 000 ₽' },
-    { id: 'warm_floor',   label: 'Тёплый пол (водяной)',     fixedPrice: 0,     perM2: 1500, unit: '1 500 ₽/м²' },
-    { id: 'conditioner',  label: 'Кондиционирование',        fixedPrice: 18000, perM2: 0,    unit: '18 000 ₽/точка' },
-    { id: 'ceilings',     label: 'Натяжные потолки',         fixedPrice: 0,     perM2: 850,  unit: '850 ₽/м²' },
-  ],
-  apartment_design: [
-    { id: 'supervision',  label: 'Авторский надзор',              fixedPrice: 0,     perM2: 500,  unit: '500 ₽/м²' },
-    { id: 'large_tile',   label: 'Крупноформатный керамогранит',  fixedPrice: 0,     perM2: 2500, unit: '2 500 ₽/м²' },
-    { id: 'hidden_doors', label: 'Скрытые двери',                fixedPrice: 35000, perM2: 0,    unit: 'от 35 000 ₽' },
-    { id: 'smart_home',   label: 'Умный дом (базовый)',           fixedPrice: 45000, perM2: 0,    unit: 'от 45 000 ₽' },
-  ],
-  bathroom: [
-    { id: 'warm_floor_b', label: 'Тёплый пол электрический', fixedPrice: 0,     perM2: 3500, unit: '3 500 ₽/м²' },
-    { id: 'ventilation',  label: 'Приточная вентиляция',     fixedPrice: 12000, perM2: 0,    unit: '12 000 ₽' },
-    { id: 'smart_bath',   label: 'Умный санузел',            fixedPrice: 20000, perM2: 0,    unit: 'от 20 000 ₽' },
-  ],
-  engineering: [
-    { id: 'heating',     label: 'Теплоснабжение',                  fixedPrice: 35000, perM2: 0, unit: 'от 35 000 ₽' },
-    { id: 'ventilation', label: 'Приточно-вытяжная вентиляция',    fixedPrice: 25000, perM2: 0, unit: 'от 25 000 ₽' },
-    { id: 'network',     label: 'Слаботочные сети (интернет, ТВ)', fixedPrice: 15000, perM2: 0, unit: '15 000 ₽' },
-  ],
-};
-
-const INFO_INCLUDES = {
-  apartment: {
-    title: 'Что входит в стоимость «Под ключ»',
-    items: [
-      { icon: '🏗', title: 'Подготовка',      desc: 'Демонтаж (для вторички), возведение перегородок, выравнивание стен и пола под лазерный уровень.' },
-      { icon: '⚡', title: 'Инженерия',       desc: 'Полная разводка электрики и сантехники, сборка электрощита и коллекторного узла.' },
-      { icon: '✨', title: 'Чистовой этап',   desc: 'Укладка ламината/кварцвинила, оклейка обоев или покраска, монтаж плинтусов и розеток.' },
-      { icon: '💡', title: 'Потолки и свет',  desc: 'Натяжные потолки во всех комнатах, установка светильников и трековых систем.' },
-    ],
-  },
-  bathroom: {
-    title: 'Что включено в санузел «Под ключ»',
-    items: [
-      { icon: '🔲', title: 'Плиточные работы', desc: 'Укладка керамогранита (2 500 ₽/м²) с запилом 45°, сверлением отверстий и эпоксидной затиркой.' },
-      { icon: '🚰', title: 'Водоподготовка',   desc: 'Скрытая разводка труб, установка фильтров, редукторов давления и коллекторного узла.' },
-      { icon: '🛡', title: 'Безопасность',     desc: 'Двухслойная гидроизоляция всей площади пола и «мокрых» зон стен — защита от протечек.' },
-      { icon: '🚿', title: 'Финиш',            desc: 'Установка ванны/душа, инсталляции, раковины, смесителей, гигиенического душа и мебели.' },
-    ],
-  },
-  engineering: {
-    title: 'Фундамент вашего ремонта',
-    items: [
-      { icon: '🔌', title: 'Электрика',      desc: 'Кабель ВВГнг-LS (не поддерживает горение), защита каждой линии отдельным автоматом и реле напряжения.' },
-      { icon: '🚿', title: 'Сантехника',     desc: 'Трубы из сшитого полиэтилена Rehau/Stout. Коллекторная схема исключает перепады напора.' },
-      { icon: '📐', title: 'Геометрия',      desc: 'Выведение углов 90° по маякам в зонах установки кухни и ванны. Идеальное примыкание мебели.' },
-      { icon: '🛡', title: 'Скрытые работы', desc: 'Обязательная опрессовка систем воздухом, шумоизоляция стояков канализации, контроль ГОСТ.' },
-    ],
-  },
-};
+const QUIZ_TYPES = [
+  { id: 'apartment',   label: 'Квартира',  desc: 'Косметический, капитальный или дизайнерский', photo: '/quiz/photo/k1.png' },
+  { id: 'bathroom',    label: 'Санузел',   desc: 'Плитка, сантехника, инсталляция под ключ',    photo: '/quiz/photo/k2.png' },
+  { id: 'engineering', label: 'Инженерия', desc: 'Электрика, сантехника, черновые работы',       photo: '/quiz/photo/k3.png' },
+] as const;
 
 const BONUSES = [
   { id: 'discount',  Icon: Gift,     label: 'Скидка 5%',       unlockedAt: 1 },
@@ -104,27 +121,23 @@ function fmtPhone(val: string) {
   return r;
 }
 
-const InfoBlock: React.FC<{ content: (typeof INFO_INCLUDES)[keyof typeof INFO_INCLUDES] }> = ({ content }) => {
+// ── Spoiler block ────────────────────────────────────────
+const Spoiler: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-4 border border-slate-100 rounded-2xl overflow-hidden">
+    <div className="border border-slate-100 rounded-2xl overflow-hidden">
       <button onClick={() => setOpen(p => !p)}
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-accent hover:bg-slate-50 transition-colors">
-        <span className="flex items-center gap-2"><Info className="w-4 h-4" />{content.title}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors">
+        <span className="flex items-center gap-2 text-sm font-bold text-slate-600">
+          <Info className="w-4 h-4 text-accent shrink-0" />{title}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ${open ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
-            transition={{ duration: 0.25 }} className="overflow-hidden">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 pt-0">
-              {content.items.map((item, i) => (
-                <div key={i} className="bg-slate-50 rounded-xl p-3">
-                  <p className="font-bold text-slate-800 text-xs mb-1">{item.icon} {item.title}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
+            transition={{ duration: 0.22 }} className="overflow-hidden">
+            <div className="p-4 pt-0">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -132,475 +145,542 @@ const InfoBlock: React.FC<{ content: (typeof INFO_INCLUDES)[keyof typeof INFO_IN
   );
 };
 
-const QuizCalc: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [type, setType] = useState<QuizType | null>(null);
+// ── Qty stepper ──────────────────────────────────────────
+const QtyStepper: React.FC<{ value: number; unit: string; onChange: (v: number) => void }> = ({ value, unit, onChange }) => (
+  <div className="flex items-center gap-2 mt-2 ml-10">
+    <button onClick={() => onChange(Math.max(1, value - 1))}
+      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+      <Minus className="w-3.5 h-3.5 text-slate-600" />
+    </button>
+    <input type="number" value={value}
+      onChange={e => onChange(Math.max(1, Number(e.target.value)))}
+      className="w-16 text-center font-bold text-sm border-2 border-slate-100 rounded-xl py-1 focus:outline-none focus:border-accent"
+      min={1} />
+    <span className="text-xs text-slate-400 font-medium">{unit}</span>
+    <button onClick={() => onChange(value + 1)}
+      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+      <Plus className="w-3.5 h-3.5 text-slate-600" />
+    </button>
+  </div>
+);
 
+// ── Main component ────────────────────────────────────────
+const QuizCalc: React.FC = () => {
+  const [step, setStep]       = useState(1);
+  const [subStep, setSubStep] = useState(0); // for apartment step 2
+  const [type, setType]       = useState<QuizType | null>(null);
+
+  // Apartment
   const [repairType, setRepairType]     = useState<RepairType>('capital');
   const [area, setArea]                 = useState(50);
   const [buildingType, setBuildingType] = useState<BuildingType>('new');
   const [bathrooms, setBathrooms]       = useState(1);
 
+  // Bathroom
   const [bathroomVariant, setBathroomVariant] = useState<BathroomVariant>('combined');
   const [bathroomArea, setBathroomArea]       = useState(4);
   const [showerType, setShowerType]           = useState<ShowerType>('standard');
   const [toiletType, setToiletType]           = useState<ToiletType>('installation');
 
+  // Engineering
   const [engArea, setEngArea]               = useState(50);
   const [electricPoints, setElectricPoints] = useState(40);
   const [plumbingType, setPlumbingType]     = useState<PlumbingType>('collector');
   const [wallType, setWallType]             = useState<WallType>('beacons');
 
-  const [selectedWorks, setSelectedWorks] = useState<Set<string>>(new Set());
-  const [name, setName]         = useState('');
-  const [phone, setPhone]       = useState('');
+  // Works + quantities
+  const [selectedWorks, setSelectedWorks]   = useState<Set<string>>(new Set());
+  const [quantities, setQuantities]         = useState<Record<string, number>>({});
+
+  // Lead
+  const [name, setName]           = useState('');
+  const [phone, setPhone]         = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollUp = () => setTimeout(() => containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 
-  const goToStep = (s: number) => {
-    setStep(s);
-    setTimeout(() => containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  const goToStep = (s: number, sub = 0) => { setStep(s); setSubStep(sub); scrollUp(); };
+
+  const toggleWork = (id: string, defaultQtyVal: number) => {
+    setSelectedWorks(prev => {
+      const n = new Set(prev);
+      if (n.has(id)) { n.delete(id); } else {
+        n.add(id);
+        if (!quantities[id]) setQuantities(q => ({ ...q, [id]: defaultQtyVal }));
+      }
+      return n;
+    });
   };
-  const toggleWork = (id: string) => setSelectedWorks(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
 
+  const setQty = (id: string, val: number) => setQuantities(q => ({ ...q, [id]: Math.max(1, val) }));
+
+  // ── Active area for calculations ──
+  const activeArea = type === 'bathroom' ? bathroomArea : type === 'engineering' ? engArea : area;
+
+  const workItemsKey = type === 'apartment' ? `apartment_${repairType}` : type ?? '';
+  const currentItems = WORK_ITEMS[workItemsKey] ?? [];
+
+  // ── Pricing ──────────────────────────────────────────────
   const calcResult = () => {
-    let workCost = 0;
-    const getWorkItemsFor = (key: string) => WORK_ITEMS[key] ?? [];
-    const addExtras = (items: WorkItem[], areaVal: number) => {
-      items.forEach(item => {
-        if (!selectedWorks.has(item.id)) return;
-        workCost += item.fixedPrice + item.perM2 * areaVal;
-      });
-    };
-
+    let work = 0;
     if (type === 'apartment') {
-      const mult = buildingType === 'old' ? 1.2 : 1;
-      workCost = Math.round(area * REPAIR_RATES[repairType].rate * mult + (bathrooms - 1) * 120000);
-      addExtras(getWorkItemsFor(`apartment_${repairType}`), area);
-      const mat = Math.round(workCost * (repairType === 'cosmetic' ? 0.25 : 0.45));
-      return { workCost, mat, total: workCost + mat };
-    }
-    if (type === 'bathroom') {
-      workCost = (bathroomVariant === 'combined' ? 175000 : 210000) + bathroomArea * 22000
+      work = Math.round(area * REPAIR_RATES[repairType].rate * (buildingType === 'old' ? 1.2 : 1) + (bathrooms - 1) * 120000);
+    } else if (type === 'bathroom') {
+      work = (bathroomVariant === 'combined' ? 175000 : 210000) + bathroomArea * 22000
         + (showerType === 'tile' ? 45000 : 0) + (toiletType === 'installation' ? 15000 : 0);
-      addExtras(getWorkItemsFor('bathroom'), bathroomArea);
-      const mat = Math.round(workCost * 0.6);
-      return { workCost, mat, total: workCost + mat };
-    }
-    if (type === 'engineering') {
-      workCost = engArea * 7500 + electricPoints * 1500
+    } else if (type === 'engineering') {
+      work = engArea * 7500 + electricPoints * 1500
         + (plumbingType === 'collector' ? 45000 : 20000)
         + (wallType === 'beacons' ? engArea * 950 : engArea * 400);
-      addExtras(getWorkItemsFor('engineering'), engArea);
-      const mat = Math.round(workCost * 0.7);
-      return { workCost, mat, total: workCost + mat };
     }
-    return { workCost: 0, mat: 0, total: 0 };
+    currentItems.forEach(item => {
+      if (!selectedWorks.has(item.id)) return;
+      const qty = quantities[item.id] ?? item.defaultQty(activeArea);
+      work += item.unitPrice * (item.hasQty ? qty : 1);
+    });
+    const matRate = type === 'apartment' && repairType === 'cosmetic' ? 0.25 : type === 'engineering' ? 0.7 : type === 'bathroom' ? 0.6 : 0.45;
+    const mat = Math.round(work * matRate);
+    return { work, mat, total: work + mat };
   };
 
   const result = calcResult();
   const fmt = (n: number) => n.toLocaleString('ru');
-  const currentInfo = type ? INFO_INCLUDES[type] : null;
-  const workItemsKey = type === 'apartment' ? `apartment_${repairType}` : type ?? '';
-  const currentWorkItems = WORK_ITEMS[workItemsKey] ?? [];
 
-  const RateInfo = () => {
-    if (!type) return null;
-    if (type === 'apartment') return (
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-xs space-y-1.5">
-        <p className="font-bold text-slate-800 mb-2">Как мы считаем:</p>
-        {(Object.entries(REPAIR_RATES) as [RepairType, typeof REPAIR_RATES.cosmetic][]).map(([k, v]) => (
-          <p key={k} className={`flex justify-between ${repairType === k ? 'text-accent font-bold' : 'text-slate-500'}`}>
-            <span>{v.label}</span><span>от {v.rate.toLocaleString('ru')} ₽/м²</span>
-          </p>
-        ))}
-        <p className="flex justify-between text-slate-500 border-t border-blue-100 pt-1.5"><span>Вторичка</span><span>+20%</span></p>
-        <p className="flex justify-between text-slate-500"><span>Доп. санузел</span><span>+120 000 ₽</span></p>
-        <p className="flex justify-between text-slate-400"><span>Черновые материалы</span><span>~{repairType === 'cosmetic' ? '25' : '45'}% от работ</span></p>
-      </div>
-    );
-    if (type === 'bathroom') return (
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-xs space-y-1.5">
-        <p className="font-bold text-slate-800 mb-2">Как мы считаем:</p>
-        <p className="flex justify-between text-slate-500"><span>Совмещённый (база)</span><span>от 175 000 ₽</span></p>
-        <p className="flex justify-between text-slate-500"><span>Раздельный (база)</span><span>от 210 000 ₽</span></p>
-        <p className="flex justify-between text-slate-500"><span>За каждый м² площади</span><span>22 000 ₽/м²</span></p>
-        <p className="flex justify-between text-slate-500"><span>Плитка стены / пол</span><span>2 500 ₽/м²</span></p>
-        <p className="flex justify-between text-slate-500"><span>Инсталляция унитаза</span><span>+15 000 ₽</span></p>
-        <p className="flex justify-between text-slate-500"><span>Душевая из плитки</span><span>+45 000 ₽</span></p>
-        <p className="flex justify-between text-slate-400"><span>Материалы и инженерия</span><span>~60% от работ</span></p>
-      </div>
-    );
-    return (
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-xs space-y-1.5">
-        <p className="font-bold text-slate-800 mb-2">Как мы считаем:</p>
-        <p className="flex justify-between text-slate-500"><span>Черновые работы</span><span>7 500 ₽/м²</span></p>
-        <p className="flex justify-between text-slate-500"><span>Монтаж эл. точки</span><span>1 500 ₽/точка</span></p>
-        <p className="flex justify-between text-slate-500"><span>Штукатурка по маякам</span><span>950 ₽/м²</span></p>
-        <p className="flex justify-between text-slate-500"><span>Штукатурка визуально</span><span>400 ₽/м²</span></p>
-        <p className="flex justify-between text-slate-500"><span>Коллекторная разводка</span><span>45 000 ₽</span></p>
-        <p className="flex justify-between text-slate-500"><span>Тройниковая разводка</span><span>20 000 ₽</span></p>
-        <p className="flex justify-between text-slate-400"><span>Черновые материалы</span><span>~70% от работ</span></p>
-      </div>
-    );
-  };
-
+  // ── Submit ────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!name || phone.length < 16) return;
     setSubmitting(true);
     reachGoal('quiz_lead_captured');
-    const typeLabel = QUIZ_TYPES.find(t => t.id === type)?.label ?? '—';
-    const works = Array.from(selectedWorks).map(id => currentWorkItems.find(i => i.id === id)?.label ?? id).join(', ');
-    const details = type === 'apartment'
-      ? `Вид: ${REPAIR_RATES[repairType].label}\nПлощадь: ${area} м²\nЖильё: ${buildingType === 'new' ? 'Новостройка' : 'Вторичка'}\nСанузлы: ${bathrooms}`
+    const worksList = Array.from(selectedWorks).map(id => {
+      const item = currentItems.find(i => i.id === id);
+      if (!item) return id;
+      const qty = quantities[id] ?? item.defaultQty(activeArea);
+      return item.hasQty ? `${item.label}: ${qty} ${item.unit}` : item.label;
+    }).join('; ');
+    const params = type === 'apartment'
+      ? `${REPAIR_RATES[repairType].label} | ${area} м² | ${buildingType === 'new' ? 'Новостройка' : 'Вторичка'} | ${bathrooms} санузл.`
       : type === 'bathroom'
-      ? `Тип: ${bathroomVariant === 'combined' ? 'Совмещённый' : 'Раздельный'}\nПлощадь: ${bathroomArea} м²\nДуш: ${showerType === 'tile' ? 'Из плитки' : 'Ванна/кабина'}\nУнитаз: ${toiletType === 'installation' ? 'Инсталляция' : 'Напольный'}`
-      : `Площадь: ${engArea} м²\nЭлектроточек: ${electricPoints}\nТрубы: ${plumbingType === 'collector' ? 'Коллекторная' : 'Тройниковая'}\nСтены: ${wallType === 'beacons' ? 'По маякам' : 'Визуально'}`;
-    const message = `🎯 КВИЗ\nТип: ${typeLabel}\n${details}\nДоп. работы: ${works || 'нет'}\nРаботы: ${fmt(result.workCost)} ₽\nМатериалы: ${fmt(result.mat)} ₽\nИтого: ${fmt(result.total)} ₽`;
+      ? `${bathroomVariant === 'combined' ? 'Совмещённый' : 'Раздельный'} | ${bathroomArea} м² | Душ: ${showerType === 'tile' ? 'из плитки' : 'ванна/кабина'} | ${toiletType === 'installation' ? 'инсталляция' : 'напольный'}`
+      : `${engArea} м² | ${electricPoints} точек | ${plumbingType === 'collector' ? 'коллектор' : 'тройник'} | стены ${wallType === 'beacons' ? 'по маякам' : 'визуально'}`;
+    const message = `🎯 КВИЗ — ${QUIZ_TYPES.find(t => t.id === type)?.label}\n${params}\nДоп: ${worksList || 'нет'}\nРаботы: ${fmt(result.work)} ₽ | Материалы: ${fmt(result.mat)} ₽ | Итого: ${fmt(result.total)} ₽`;
     try { await fetch('/lead.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, phone, message }) }); } catch {}
-    setSubmitted(true);
-    setSubmitting(false);
+    setSubmitted(true); setSubmitting(false);
   };
+
+  // ── Rate spoiler content ──────────────────────────────────
+  const RateRows = () => {
+    if (type === 'apartment') return (
+      <div className="space-y-1.5 text-xs">
+        {(Object.entries(REPAIR_RATES) as [RepairType, typeof REPAIR_RATES.cosmetic][]).map(([k, v]) => (
+          <div key={k} className={`flex justify-between ${repairType === k ? 'text-accent font-bold' : 'text-slate-500'}`}>
+            <span>{v.label}</span><span>от {v.rate.toLocaleString('ru')} ₽/м²</span>
+          </div>
+        ))}
+        <div className="flex justify-between text-slate-400 border-t border-slate-100 pt-1.5 mt-1"><span>Вторичка</span><span>+20%</span></div>
+        <div className="flex justify-between text-slate-400"><span>Доп. санузел</span><span>+120 000 ₽</span></div>
+        <div className="flex justify-between text-slate-400"><span>Материалы</span><span>~{repairType === 'cosmetic' ? '25' : '45'}% от работ</span></div>
+      </div>
+    );
+    if (type === 'bathroom') return (
+      <div className="space-y-1.5 text-xs text-slate-500">
+        <div className="flex justify-between"><span>Совмещённый (база)</span><span>от 175 000 ₽</span></div>
+        <div className="flex justify-between"><span>Раздельный (база)</span><span>от 210 000 ₽</span></div>
+        <div className="flex justify-between"><span>За каждый м² площади</span><span>22 000 ₽/м²</span></div>
+        <div className="flex justify-between"><span>Плитка стены/пол</span><span>2 500 ₽/м²</span></div>
+        <div className="flex justify-between"><span>Инсталляция</span><span>+15 000 ₽</span></div>
+        <div className="flex justify-between"><span>Душевая из плитки</span><span>+45 000 ₽</span></div>
+        <div className="flex justify-between text-slate-400"><span>Материалы и инженерия</span><span>~60% от работ</span></div>
+      </div>
+    );
+    return (
+      <div className="space-y-1.5 text-xs text-slate-500">
+        <div className="flex justify-between"><span>Черновые работы</span><span>7 500 ₽/м²</span></div>
+        <div className="flex justify-between"><span>Монтаж эл. точки</span><span>1 500 ₽/шт</span></div>
+        <div className="flex justify-between"><span>Штукатурка по маякам</span><span>950 ₽/м²</span></div>
+        <div className="flex justify-between"><span>Штукатурка визуально</span><span>400 ₽/м²</span></div>
+        <div className="flex justify-between"><span>Коллекторная разводка</span><span>45 000 ₽</span></div>
+        <div className="flex justify-between"><span>Тройниковая разводка</span><span>20 000 ₽</span></div>
+        <div className="flex justify-between text-slate-400"><span>Материалы</span><span>~70% от работ</span></div>
+      </div>
+    );
+  };
+
+  // ── Step label for header ─────────────────────────────────
+  const stepLabel = ['Тип объекта', 'Параметры', 'Состав работ', 'Результат'];
 
   return (
     <div ref={containerRef} className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 scroll-mt-8">
-      <div className="h-1.5 bg-slate-100">
-        <div className="h-full bg-accent transition-all duration-500" style={{ width: `${(step / 4) * 100}%` }} />
-      </div>
-      <div className="flex items-center justify-center gap-0 px-6 pt-5 pb-4 border-b border-slate-50">
-        {[1, 2, 3, 4].map(s => (
-          <React.Fragment key={s}>
-            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all
-              ${step === s ? 'bg-accent text-white shadow-lg shadow-accent/30 scale-110' : step > s ? 'bg-green-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
-              {step > s ? <Check className="w-4 h-4" /> : s}
-            </div>
-            {s < 4 && <div className={`h-0.5 w-8 sm:w-16 transition-all ${step > s ? 'bg-green-400' : 'bg-slate-100'}`} />}
-          </React.Fragment>
-        ))}
+
+      {/* Progress */}
+      <div className="h-1 bg-slate-100">
+        <motion.div className="h-full bg-accent" animate={{ width: `${(step / 4) * 100}%` }} transition={{ duration: 0.4 }} />
       </div>
 
-      <div className="p-5 md:p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-50">
+        <div className="flex items-center gap-1.5">
+          {step > 1 && (
+            <button onClick={() => step === 2 && subStep === 1 && type === 'apartment' ? setSubStep(0) : goToStep(Math.max(1, step - 1))}
+              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors mr-1">
+              <ChevronLeft className="w-4 h-4 text-slate-600" />
+            </button>
+          )}
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stepLabel[step - 1]}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {[1, 2, 3, 4].map(s => (
+            <div key={s} className={`transition-all duration-300 rounded-full
+              ${step === s ? 'w-6 h-2 bg-accent' : step > s ? 'w-2 h-2 bg-green-400' : 'w-2 h-2 bg-slate-200'}`} />
+          ))}
+        </div>
+      </div>
+
+      <div className="p-4 md:p-6">
+
+        {/* Bonus chips (step 2+) */}
         {step >= 2 && (
-          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap gap-2 mb-5">
+          <div className="flex flex-wrap gap-1.5 mb-4">
             {BONUSES.map(({ id, Icon, label, unlockedAt }) => (
-              <div key={id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all
+              <div key={id} className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border transition-all
                 ${unlockedAt <= step ? 'bg-accent/10 text-accent border-accent/20' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
-                <Icon className="w-3.5 h-3.5" />{label}
-                {unlockedAt <= step && <Check className="w-3 h-3" />}
+                <Icon className="w-3 h-3" />{label}
+                {unlockedAt <= step && <Check className="w-2.5 h-2.5" />}
               </div>
             ))}
-          </motion.div>
+          </div>
         )}
 
         <AnimatePresence mode="wait">
 
-          {/* STEP 1 */}
+          {/* ── STEP 1: Type ─────────────────────────────── */}
           {step === 1 && (
-            <motion.div key="s1" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.25 }}>
-              <div className="bg-accent/5 border-2 border-accent/20 rounded-2xl px-4 py-3 mb-6 text-center">
-                <p className="font-bold text-sm md:text-base leading-snug">
-                  <span className="text-accent">Предварительная смета за 1 минуту. Результат — сразу.</span>{' '}
-                  <span className="text-slate-700">Вводить номер телефона <span className="underline decoration-accent decoration-2 underline-offset-2">НЕ НУЖНО!</span></span>
-                </p>
-              </div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-5">Что ремонтируем?</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <motion.div key="s1" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.22 }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-4">Что ремонтируем?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {QUIZ_TYPES.map(t => (
-                  <button key={t.id} onClick={() => { setType(t.id as QuizType); setSelectedWorks(new Set()); reachGoal('quiz_type_selected'); setTimeout(() => goToStep(2), 280); }}
-                    className={`relative overflow-hidden rounded-2xl border-2 transition-all duration-300 text-left min-h-[190px] flex flex-col
-                      ${type === t.id ? 'border-accent shadow-lg shadow-accent/20' : 'border-slate-100 hover:border-accent/50 hover:shadow-md'}`}>
+                  <button key={t.id}
+                    onClick={() => { setType(t.id as QuizType); setSelectedWorks(new Set()); reachGoal('quiz_type_selected'); setTimeout(() => goToStep(2, 0), 250); }}
+                    className={`relative overflow-hidden rounded-2xl border-2 transition-all duration-250 text-left min-h-[160px] flex flex-col
+                      ${type === t.id ? 'border-accent shadow-md shadow-accent/20' : 'border-slate-100 hover:border-accent/40'}`}>
                     <div className="absolute inset-0 bg-slate-800">
-                      <img src={t.photo} alt={t.label} className="w-full h-full object-cover opacity-55" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
+                      <img src={t.photo} alt={t.label} className="w-full h-full object-cover opacity-50"
+                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
                     </div>
                     <div className="relative mt-auto p-4">
-                      <div className="text-white font-bold text-xl">{t.label}</div>
-                      <div className="text-white/60 text-xs mt-1 leading-snug">{t.desc}</div>
+                      <p className="text-white font-bold text-lg leading-tight">{t.label}</p>
+                      <p className="text-white/55 text-xs mt-0.5 leading-snug">{t.desc}</p>
                     </div>
-                    {type === t.id && <div className="absolute top-3 right-3 w-7 h-7 bg-accent rounded-full flex items-center justify-center"><Check className="w-4 h-4 text-white" /></div>}
+                    {type === t.id && (
+                      <div className="absolute top-2.5 right-2.5 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
             </motion.div>
           )}
 
-          {/* STEP 2 */}
+          {/* ── STEP 2: Parameters ───────────────────────── */}
           {step === 2 && (
-            <motion.div key="s2" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.25 }}>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Параметры объекта</h2>
+            <motion.div key={`s2-${subStep}`} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.22 }}>
 
-              {type === 'apartment' && (
-                <div className="space-y-6">
-                  <div>
-                    <label className="font-bold text-slate-700 block mb-3 text-xs uppercase tracking-wider">Вид ремонта</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {(Object.entries(REPAIR_RATES) as [RepairType, typeof REPAIR_RATES.cosmetic][]).map(([k, v]) => (
-                        <button key={k} onClick={() => setRepairType(k)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all min-h-[64px]
-                            ${repairType === k ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600 hover:border-accent/40'}`}>
-                          <div className="font-bold text-sm">{v.label}</div>
-                          <div className="text-xs opacity-60 mt-0.5 leading-snug">{v.sub}</div>
-                        </button>
-                      ))}
-                    </div>
+              {/* Apartment sub-step 0: repair type only */}
+              {type === 'apartment' && subStep === 0 && (
+                <>
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">Вид ремонта</h2>
+                  <div className="space-y-2">
+                    {(Object.entries(REPAIR_RATES) as [RepairType, typeof REPAIR_RATES.cosmetic][]).map(([k, v]) => (
+                      <button key={k}
+                        onClick={() => { setRepairType(k); setTimeout(() => setSubStep(1) || scrollUp(), 250); }}
+                        className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-left transition-all min-h-[64px]
+                          ${repairType === k ? 'border-accent bg-accent/5' : 'border-slate-100 hover:border-accent/30'}`}>
+                        <div>
+                          <p className={`font-bold text-base ${repairType === k ? 'text-accent' : 'text-slate-800'}`}>{v.label}</p>
+                          <p className="text-xs text-slate-400 mt-0.5">{v.sub}</p>
+                        </div>
+                        <p className={`font-bold text-sm shrink-0 ml-3 ${repairType === k ? 'text-accent' : 'text-slate-400'}`}>
+                          от {v.rate.toLocaleString('ru')} ₽/м²
+                        </p>
+                      </button>
+                    ))}
                   </div>
+                </>
+              )}
+
+              {/* Apartment sub-step 1: area + building + bathrooms */}
+              {type === 'apartment' && subStep === 1 && (
+                <div className="space-y-5">
+                  <h2 className="text-xl font-bold text-slate-900">Параметры квартиры</h2>
                   <div>
-                    <div className="flex justify-between items-end mb-3">
-                      <label className="font-bold text-slate-700 text-xs uppercase tracking-wider">Площадь квартиры</label>
-                      <span className="text-3xl font-black text-accent">{area} м²</span>
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="text-sm font-bold text-slate-600">Площадь</label>
+                      <span className="text-2xl font-black text-accent">{area} м²</span>
                     </div>
-                    <input type="range" min={20} max={150} step={1} value={area} onChange={e => setArea(Number(e.target.value))}
+                    <input type="range" min={20} max={200} step={1} value={area} onChange={e => setArea(Number(e.target.value))}
                       className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent" />
-                    <div className="flex justify-between text-xs text-slate-400 mt-1"><span>20 м²</span><span>150 м²</span></div>
+                    <div className="flex justify-between text-xs text-slate-400 mt-1"><span>20</span><span>200 м²</span></div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Тип жилья</label>
-                      {([['new', 'Новостройка', ''], ['old', 'Вторичка', '+20% (демонтаж)']] as [BuildingType, string, string][]).map(([v, l, s]) => (
+                  <div>
+                    <label className="text-sm font-bold text-slate-600 block mb-2">Тип жилья</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([['new', 'Новостройка', ''], ['old', 'Вторичка', '+20%']] as [BuildingType, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setBuildingType(v)}
-                          className={`w-full mb-2 p-3 rounded-xl border-2 text-left transition-all min-h-[48px]
+                          className={`p-3 rounded-xl border-2 text-left transition-all min-h-[52px]
                             ${buildingType === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          {s && <div className="text-xs opacity-60">{s}</div>}
+                          <p className="font-bold text-sm">{l}</p>
+                          {s && <p className="text-xs opacity-60">{s}</p>}
                         </button>
                       ))}
                     </div>
-                    <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Санузлы</label>
+                  </div>
+                  <div>
+                    <label className="text-sm font-bold text-slate-600 block mb-2">Санузлы</label>
+                    <div className="grid grid-cols-3 gap-2">
                       {[1, 2, 3].map(n => (
                         <button key={n} onClick={() => setBathrooms(n)}
-                          className={`w-full mb-2 p-3 rounded-xl border-2 text-left transition-all min-h-[48px]
+                          className={`p-3 rounded-xl border-2 text-center transition-all min-h-[52px]
                             ${bathrooms === n ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{n === 3 ? '3+ санузла' : n === 1 ? '1 санузел' : '2 санузла'}</div>
-                          {n > 1 && <div className="text-xs opacity-60">+{((n - 1) * 120000).toLocaleString('ru')} ₽</div>}
+                          <p className="font-bold text-sm">{n === 3 ? '3+' : n}</p>
+                          {n > 1 && <p className="text-xs opacity-60">+{((n - 1) * 120).toLocaleString('ru')}к</p>}
                         </button>
                       ))}
                     </div>
                   </div>
-                  <RateInfo />
+                  <button onClick={() => goToStep(3)}
+                    className="w-full bg-accent text-white py-3.5 rounded-2xl font-bold hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                    Далее — состав работ <ChevronRight className="w-5 h-5" />
+                  </button>
                 </div>
               )}
 
+              {/* Bathroom params */}
               {type === 'bathroom' && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-5">
+                  <h2 className="text-xl font-bold text-slate-900">Параметры санузла</h2>
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Тип санузла</label>
-                      {([['combined', 'Совмещённый', 'от 175 000 ₽'], ['separate', 'Раздельный', 'от 210 000 ₽']] as [BathroomVariant, string, string][]).map(([v, l, s]) => (
+                      <label className="text-sm font-bold text-slate-600 block mb-2">Тип санузла</label>
+                      {([['combined', 'Совмещённый', '175 000 ₽'], ['separate', 'Раздельный', '210 000 ₽']] as [BathroomVariant, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setBathroomVariant(v)}
                           className={`w-full mb-2 p-3 rounded-xl border-2 text-left transition-all min-h-[56px]
                             ${bathroomVariant === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          <div className="text-xs opacity-60">{s}</div>
+                          <p className="font-bold text-sm">{l}</p>
+                          <p className="text-xs opacity-60">от {s}</p>
                         </button>
                       ))}
                     </div>
                     <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Площадь (м²)</label>
-                      <input type="number" inputMode="numeric" min={2} max={15} value={bathroomArea}
+                      <label className="text-sm font-bold text-slate-600 block mb-2">Площадь (м²)</label>
+                      <input type="number" inputMode="numeric" min={2} max={20} value={bathroomArea}
                         onChange={e => setBathroomArea(Number(e.target.value))}
-                        className="w-full text-4xl font-black py-5 px-4 rounded-2xl border-2 border-slate-100 focus:border-accent focus:outline-none bg-slate-50 text-slate-900" />
+                        className="w-full text-4xl font-black py-4 px-3 rounded-2xl border-2 border-slate-100 focus:border-accent focus:outline-none bg-slate-50 text-slate-900 text-center" />
                     </div>
                   </div>
                   <div>
-                    <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Душевая зона</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {([['standard', 'Ванна / Кабина', 'Стандартная установка'], ['tile', 'Из плитки', '+45 000 ₽ (строительное + трап)']] as [ShowerType, string, string][]).map(([v, l, s]) => (
+                    <label className="text-sm font-bold text-slate-600 block mb-2">Душевая зона</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([['standard', 'Ванна / Кабина', 'Стандарт'], ['tile', 'Из плитки', '+45 000 ₽']] as [ShowerType, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setShowerType(v)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all min-h-[72px]
+                          className={`p-3 rounded-xl border-2 text-left transition-all min-h-[60px]
                             ${showerType === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          <div className="text-xs opacity-60 mt-0.5 leading-snug">{s}</div>
+                          <p className="font-bold text-sm">{l}</p>
+                          <p className="text-xs opacity-60">{s}</p>
                         </button>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Тип унитаза</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {([['standard', 'Напольный', 'Классический вариант'], ['installation', 'Инсталляция', '+15 000 ₽ (подвесной)']] as [ToiletType, string, string][]).map(([v, l, s]) => (
+                    <label className="text-sm font-bold text-slate-600 block mb-2">Унитаз</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([['standard', 'Напольный', 'Классика'], ['installation', 'Инсталляция', '+15 000 ₽']] as [ToiletType, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setToiletType(v)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all min-h-[72px]
+                          className={`p-3 rounded-xl border-2 text-left transition-all min-h-[60px]
                             ${toiletType === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          <div className="text-xs opacity-60 mt-0.5">{s}</div>
+                          <p className="font-bold text-sm">{l}</p>
+                          <p className="text-xs opacity-60">{s}</p>
                         </button>
                       ))}
                     </div>
                   </div>
-                  <RateInfo />
+                  <button onClick={() => goToStep(3)}
+                    className="w-full bg-accent text-white py-3.5 rounded-2xl font-bold hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                    Далее <ChevronRight className="w-5 h-5" />
+                  </button>
                 </div>
               )}
 
+              {/* Engineering params */}
               {type === 'engineering' && (
-                <div className="space-y-6">
+                <div className="space-y-5">
+                  <h2 className="text-xl font-bold text-slate-900">Параметры объекта</h2>
                   <div>
-                    <div className="flex justify-between items-end mb-3">
-                      <label className="font-bold text-slate-700 text-xs uppercase tracking-wider">Площадь объекта</label>
-                      <span className="text-3xl font-black text-accent">{engArea} м²</span>
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="text-sm font-bold text-slate-600">Площадь</label>
+                      <span className="text-2xl font-black text-accent">{engArea} м²</span>
                     </div>
-                    <input type="range" min={20} max={150} step={1} value={engArea} onChange={e => setEngArea(Number(e.target.value))}
+                    <input type="range" min={20} max={200} step={1} value={engArea} onChange={e => setEngArea(Number(e.target.value))}
                       className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent" />
                   </div>
                   <div>
-                    <div className="flex justify-between items-end mb-3">
-                      <label className="font-bold text-slate-700 text-xs uppercase tracking-wider">Точек электрики</label>
-                      <span className="text-3xl font-black text-accent">{electricPoints}</span>
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="text-sm font-bold text-slate-600">Точек электрики</label>
+                      <span className="text-2xl font-black text-accent">{electricPoints}</span>
                     </div>
                     <input type="range" min={10} max={150} step={5} value={electricPoints} onChange={e => setElectricPoints(Number(e.target.value))}
                       className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent" />
                     <div className="flex justify-between text-xs text-slate-400 mt-1"><span>10</span><span>150 точек</span></div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Разводка труб</label>
-                      {([['base', 'Тройниковая', 'Последовательная, 20 000 ₽'], ['collector', 'Коллекторная', 'Лучевая надёжная, 45 000 ₽']] as [PlumbingType, string, string][]).map(([v, l, s]) => (
+                      <label className="text-sm font-bold text-slate-600 block mb-2">Разводка труб</label>
+                      {([['base', 'Тройниковая', '20 000 ₽'], ['collector', 'Коллекторная', '45 000 ₽']] as [PlumbingType, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setPlumbingType(v)}
                           className={`w-full mb-2 p-3 rounded-xl border-2 text-left transition-all min-h-[56px]
                             ${plumbingType === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          <div className="text-xs opacity-60 leading-snug">{s}</div>
+                          <p className="font-bold text-sm">{l}</p>
+                          <p className="text-xs opacity-60">{s}</p>
                         </button>
                       ))}
                     </div>
                     <div>
-                      <label className="font-bold text-slate-700 block mb-2 text-xs uppercase tracking-wider">Стены</label>
-                      {([['visual', 'Визуально', 'Плоские, 400 ₽/м²'], ['beacons', 'По маякам', 'Углы 90°, 950 ₽/м²']] as [WallType, string, string][]).map(([v, l, s]) => (
+                      <label className="text-sm font-bold text-slate-600 block mb-2">Стены</label>
+                      {([['visual', 'Визуально', '400 ₽/м²'], ['beacons', 'По маякам', '950 ₽/м²']] as [WallType, string, string][]).map(([v, l, s]) => (
                         <button key={v} onClick={() => setWallType(v)}
                           className={`w-full mb-2 p-3 rounded-xl border-2 text-left transition-all min-h-[56px]
                             ${wallType === v ? 'border-accent bg-accent/5 text-accent' : 'border-slate-100 text-slate-600'}`}>
-                          <div className="font-bold text-sm">{l}</div>
-                          <div className="text-xs opacity-60">{s}</div>
+                          <p className="font-bold text-sm">{l}</p>
+                          <p className="text-xs opacity-60">{s}</p>
                         </button>
                       ))}
                     </div>
                   </div>
-                  <RateInfo />
+                  <button onClick={() => goToStep(3)}
+                    className="w-full bg-accent text-white py-3.5 rounded-2xl font-bold hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                    Далее <ChevronRight className="w-5 h-5" />
+                  </button>
                 </div>
               )}
-
-              <button onClick={() => goToStep(3)}
-                className="w-full mt-6 bg-accent text-white py-4 rounded-2xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
-                Далее — состав работ <ChevronRight className="w-5 h-5" />
-              </button>
             </motion.div>
           )}
 
-          {/* STEP 3 */}
+          {/* ── STEP 3: Works + live price ────────────────── */}
           {step === 3 && (
-            <motion.div key="s3" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.25 }}>
-              <h2 className="text-2xl font-bold text-slate-900 mb-1">Состав работ</h2>
-              <p className="text-slate-400 text-sm mb-5">Отметьте дополнительные услуги — цена обновится.</p>
-
-              <div className="bg-slate-900 rounded-2xl p-4 mb-5 flex items-center justify-between">
-                <div>
-                  <p className="text-white/40 text-xs mb-0.5">Текущая оценка</p>
-                  <p className="text-2xl font-black text-white">{fmt(result.total)} <span className="text-accent">₽</span></p>
-                </div>
-                <div className="text-right text-xs text-white/40 space-y-0.5">
-                  <p>Работы: {fmt(result.workCost)} ₽</p>
-                  <p>Материалы: {fmt(result.mat)} ₽</p>
+            <motion.div key="s3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.22 }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-slate-900">Дополнительно</h2>
+                <div className="text-right">
+                  <p className="text-xs text-slate-400">Оценка</p>
+                  <p className="text-xl font-black text-accent tabular-nums">{fmt(result.total)} ₽</p>
                 </div>
               </div>
 
-              {currentWorkItems.length > 0 && (
-                <div className="mb-5">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Дополнительные услуги</p>
-                  <div className="space-y-2">
-                    {currentWorkItems.map(item => {
-                      const checked = selectedWorks.has(item.id);
-                      return (
-                        <button key={item.id} onClick={() => toggleWork(item.id)}
-                          className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl border-2 text-left transition-all min-h-[56px]
-                            ${checked ? 'border-accent bg-accent/5' : 'border-slate-100 hover:border-slate-200'}`}>
-                          <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${checked ? 'bg-accent border-accent' : 'border-slate-200'}`}>
-                            {checked && <Check className="w-4 h-4 text-white" />}
-                          </div>
-                          <span className={`flex-1 text-sm font-medium ${checked ? 'text-slate-900' : 'text-slate-600'}`}>{item.label}</span>
-                          <span className="text-xs text-slate-400 shrink-0">{item.unit}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              <div className="space-y-2 mb-4">
+                {currentItems.map(item => {
+                  const checked = selectedWorks.has(item.id);
+                  const qty = quantities[item.id] ?? item.defaultQty(activeArea);
+                  return (
+                    <div key={item.id} className={`rounded-2xl border-2 transition-all ${checked ? 'border-accent bg-accent/5' : 'border-slate-100'}`}>
+                      <button onClick={() => toggleWork(item.id, item.defaultQty(activeArea))}
+                        className="w-full flex items-center gap-3 px-4 py-3.5 text-left min-h-[52px]">
+                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all
+                          ${checked ? 'bg-accent border-accent' : 'border-slate-200'}`}>
+                          {checked && <Check className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                        <span className={`flex-1 text-sm font-medium ${checked ? 'text-slate-900' : 'text-slate-600'}`}>{item.label}</span>
+                        <span className="text-xs text-slate-400 shrink-0">
+                          {item.hasQty ? `${item.unitPrice.toLocaleString('ru')} ₽/${item.unit}` : `${item.unitPrice.toLocaleString('ru')} ₽`}
+                        </span>
+                      </button>
+                      {checked && item.hasQty && (
+                        <div className="px-4 pb-3">
+                          <QtyStepper value={qty} unit={item.unit} onChange={v => setQty(item.id, v)} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
 
-              <RateInfo />
-              {currentInfo && <InfoBlock content={currentInfo} />}
+              <Spoiler title="Как мы считаем"><RateRows /></Spoiler>
+              {type && <div className="mt-2"><Spoiler title={INFO_INCLUDES[type].title}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {INFO_INCLUDES[type].items.map((item, i) => (
+                    <div key={i} className="bg-slate-50 rounded-xl p-3">
+                      <p className="font-bold text-slate-800 text-xs mb-1">{item.icon} {item.title}</p>
+                      <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </Spoiler></div>}
 
               <button onClick={() => { reachGoal('quiz_step3_done'); goToStep(4); }}
-                className="w-full mt-6 bg-accent text-white py-4 rounded-2xl font-bold text-lg hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                className="w-full mt-4 bg-accent text-white py-3.5 rounded-2xl font-bold hover:bg-accent/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
                 Показать итоговую стоимость <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
           )}
 
-          {/* STEP 4 */}
+          {/* ── STEP 4: Result ────────────────────────────── */}
           {step === 4 && (
-            <motion.div key="s4" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.25 }}>
-              <div className="text-center mb-8">
-                <p className="text-slate-400 text-xs uppercase tracking-widest mb-3">Ориентировочная стоимость</p>
-                <div className="text-5xl md:text-7xl font-black text-slate-900 mb-2 tabular-nums">
+            <motion.div key="s4" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.22 }}>
+              <div className="text-center mb-6">
+                <p className="text-slate-400 text-xs uppercase tracking-widest mb-2">Ориентировочная стоимость</p>
+                <div className="text-5xl md:text-6xl font-black text-slate-900 tabular-nums">
                   {fmt(result.total)} <span className="text-accent">₽</span>
                 </div>
-                <p className="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
-                  Смета может корректироваться (±10–15%) после выезда мастера с лазерным уровнем и оценки скрытых дефектов.
-                </p>
+                <p className="text-slate-400 text-xs mt-2 max-w-xs mx-auto">Смета корректируется ±10–15% после выезда мастера</p>
               </div>
 
-              <div className="bg-slate-50 rounded-2xl p-5 mb-5 text-sm space-y-2">
-                <p className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-3">Разбивка сметы</p>
-                <div className="flex justify-between text-slate-600"><span>Стоимость работ</span><span className="font-semibold">{fmt(result.workCost)} ₽</span></div>
+              <div className="bg-slate-50 rounded-2xl p-4 mb-4 text-sm space-y-2">
+                <div className="flex justify-between text-slate-600"><span>Стоимость работ</span><span className="font-semibold">{fmt(result.work)} ₽</span></div>
                 <div className="flex justify-between text-slate-600"><span>Черновые материалы</span><span className="font-semibold">{fmt(result.mat)} ₽</span></div>
-                <div className="flex justify-between text-slate-900 font-black border-t border-slate-200 pt-2 mt-1 text-base">
+                <div className="flex justify-between text-slate-900 font-black border-t border-slate-200 pt-2 text-base">
                   <span>Итого</span><span className="text-accent">{fmt(result.total)} ₽</span>
                 </div>
               </div>
 
-              {currentInfo && <InfoBlock content={currentInfo} />}
-
               {!submitted ? (
-                <div className="bg-slate-900 rounded-3xl p-6 md:p-8 text-white mt-6">
-                  <h3 className="text-xl font-bold mb-2">Хотите зафиксировать эту цену и забрать бонусы?</h3>
-                  <p className="text-white/50 text-sm mb-5">
-                    Оставьте номер — за вами закрепятся:{' '}
-                    <span className="text-accent font-semibold">Скидка 5%</span>,{' '}
-                    <span className="text-accent font-semibold">Гарантия 3 года</span> и{' '}
-                    <span className="text-accent font-semibold">Технический план раскладки</span>.
+                <div className="bg-slate-900 rounded-3xl p-5 md:p-7 text-white">
+                  <h3 className="text-lg font-bold mb-1.5">Зафиксировать цену и забрать бонусы?</h3>
+                  <p className="text-white/50 text-xs mb-4 leading-relaxed">
+                    Скидка 5%, гарантия 3 года и технический план — бесплатно при заявке.
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-5">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {BONUSES.map(({ id, Icon, label }) => (
-                      <div key={id} className="flex items-center gap-1.5 bg-accent/20 text-accent px-3 py-1.5 rounded-full text-xs font-bold">
-                        <Icon className="w-3.5 h-3.5" />{label}
+                      <div key={id} className="flex items-center gap-1 bg-accent/20 text-accent px-2.5 py-1 rounded-full text-xs font-bold">
+                        <Icon className="w-3 h-3" />{label}
                       </div>
                     ))}
                   </div>
-                  <div className="space-y-3 mb-4">
+                  <div className="space-y-2.5 mb-3">
                     <input type="text" placeholder="Ваше имя" value={name} onChange={e => setName(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-4 rounded-xl focus:outline-none focus:border-accent transition-all text-sm" />
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3.5 rounded-xl focus:outline-none focus:border-accent text-sm" />
                     <input type="tel" placeholder="+7 (___) ___-__-__" value={phone} onChange={e => setPhone(fmtPhone(e.target.value))}
-                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-4 rounded-xl focus:outline-none focus:border-accent transition-all text-sm" />
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 px-4 py-3.5 rounded-xl focus:outline-none focus:border-accent text-sm" />
                   </div>
                   <button onClick={handleSubmit} disabled={!name || phone.length < 16 || submitting}
-                    className="w-full bg-accent text-white py-4 rounded-2xl font-bold text-lg hover:bg-accent/90 transition-all disabled:opacity-50 shadow-xl shadow-accent/30">
+                    className="w-full bg-accent text-white py-4 rounded-2xl font-bold hover:bg-accent/90 transition-all disabled:opacity-50 shadow-xl shadow-accent/30">
                     {submitting ? 'Отправляем…' : 'Зафиксировать условия и бонусы'}
                   </button>
                 </div>
               ) : (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="bg-green-50 border border-green-200 rounded-3xl p-10 text-center mt-6">
-                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30">
-                    <Check className="w-8 h-8 text-white" />
+                  className="bg-green-50 border border-green-200 rounded-3xl p-8 text-center">
+                  <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg shadow-green-500/30">
+                    <Check className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Бонусы зафиксированы!</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1">Бонусы зафиксированы!</h3>
                   <p className="text-slate-500 text-sm">Мастер наберёт вас в течение <strong>15 минут</strong>.</p>
                 </motion.div>
               )}
 
               <button onClick={() => { setStep(1); setType(null); setSelectedWorks(new Set()); setSubmitted(false); }}
-                className="w-full mt-4 text-slate-400 hover:text-accent text-sm font-medium transition-colors py-2">
-                ← Пройти расчёт заново
+                className="w-full mt-3 text-slate-400 hover:text-accent text-sm font-medium transition-colors py-2">
+                ← Пройти заново
               </button>
             </motion.div>
           )}
