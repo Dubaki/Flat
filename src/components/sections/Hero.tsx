@@ -1,9 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import HashScrollLinkButton from '../ui/HashScrollLinkButton';
 import DirectorCard from './DirectorCard';
 
+const WORDS = ['Квартир', 'Комнат', 'Ванной', 'Домов', 'Офисов'];
+const TYPE_SPEED = 100;
+const DELETE_SPEED = 60;
+const PAUSE_AFTER_TYPE = 2000;
+const PAUSE_AFTER_DELETE = 350;
+
 const Hero: React.FC = () => {
+  const [wordIdx, setWordIdx] = useState(0);
+  const [displayed, setDisplayed] = useState('Квартир');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = WORDS[wordIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && displayed === word) {
+      timeout = setTimeout(() => setIsDeleting(true), PAUSE_AFTER_TYPE);
+    } else if (isDeleting && displayed === '') {
+      timeout = setTimeout(() => {
+        setIsDeleting(false);
+        setWordIdx(i => (i + 1) % WORDS.length);
+      }, PAUSE_AFTER_DELETE);
+    } else if (isDeleting) {
+      timeout = setTimeout(() => setDisplayed(d => d.slice(0, -1)), DELETE_SPEED);
+    } else {
+      timeout = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), TYPE_SPEED);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, isDeleting, wordIdx]);
+
   return (
     <section className="relative min-h-screen flex items-center pt-28 pb-12 w-full bg-slate-900">
       {/* Background Image */}
@@ -22,7 +52,13 @@ const Hero: React.FC = () => {
           {/* Левая часть */}
           <div className="lg:col-span-7 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
             <h1 className="text-3xl xs:text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
-              Ремонт квартир <span className="italic font-serif text-accent break-keep">без посредников</span>
+              Ремонт{' '}
+              <span className="text-accent relative inline-block min-w-[3ch]">
+                {displayed}
+                <span className="inline-block w-[3px] h-[0.85em] bg-accent align-middle ml-0.5 animate-pulse" />
+              </span>
+              <br className="hidden sm:block" />
+              <span className="italic font-serif text-accent break-keep"> без посредников</span>
             </h1>
             <p className="text-lg text-white/80 mb-10 leading-relaxed">
               Узнайте стоимость ремонта за 1 минуту — результат сразу, без ввода телефона. Квартира, санузел или инженерия: точная смета по вашим параметрам.
