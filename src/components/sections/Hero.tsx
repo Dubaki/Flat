@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import HashScrollLinkButton from '../ui/HashScrollLinkButton';
 import DirectorCard from './DirectorCard';
 
-const WORDS = ['квартир', 'комнат', 'ванной', 'домов', 'офисов'];
+const WORDS = ['квартир', 'комнат', 'ванной', 'офисов'];
 const TYPE_SPEED = 100;
 const DELETE_SPEED = 60;
 const PAUSE_AFTER_TYPE = 2000;
