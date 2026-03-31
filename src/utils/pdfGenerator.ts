@@ -58,7 +58,7 @@ function getGlobalStages(data: PDFData): WorkStage[] {
         days: '2–4 раб. дня',
         items: [
           { name: 'Снятие старых обоев / смывка краски', unit: 'м²', qty: String(walls), price: fmt(d(0.08) / walls), total: d(0.08) },
-          { name: 'Шпаклёвка стен (2 слоя)', unit: 'м²', qty: String(walls), price: fmt(d(0.22) / walls), total: d(0.22) },
+          { name: 'Шпатлёвка стен (2 слоя)', unit: 'м²', qty: String(walls), price: fmt(d(0.22) / walls), total: d(0.22) },
           { name: 'Грунтовка стен и потолка', unit: 'м²', qty: String(walls + area), price: fmt(d(0.05) / (walls + area)), total: d(0.05) },
         ]
       },
@@ -156,8 +156,8 @@ function getGlobalStages(data: PDFData): WorkStage[] {
       days: '7–12 раб. дней',
       items: [
         { name: 'Штукатурка стен по маякам' + oldExtra, unit: 'м²', qty: String(walls), price: fmt(d(0.16) / walls), total: d(0.16) },
-        { name: 'Шпаклёвка стен (финишная, 2 слоя)', unit: 'м²', qty: String(walls), price: fmt(d(0.09) / walls), total: d(0.09) },
-        { name: 'Шпаклёвка потолка', unit: 'м²', qty: String(area), price: fmt(d(0.05) / area), total: d(0.05) },
+        { name: 'Шпатлёвка стен (финишная, 2 слоя)', unit: 'м²', qty: String(walls), price: fmt(d(0.09) / walls), total: d(0.09) },
+        { name: 'Шпатлёвка потолка', unit: 'м²', qty: String(area), price: fmt(d(0.05) / area), total: d(0.05) },
       ]
     },
     {

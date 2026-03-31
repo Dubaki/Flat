@@ -1,27 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero';
-import QuizCTA from '../components/sections/QuizCTA';
 import Services from '../components/sections/Services';
 import Stages from '../components/sections/Stages';
-import CalculatorHub from '../components/sections/CalculatorHub';
 import Portfolio from '../components/sections/Portfolio';
 import Contact from '../components/sections/Contact';
 ---
 
-<Layout 
+<Layout
 	title="Ремонт квартир в Екатеринбурге под ключ | Цены 2026 | Дядя Фёдор"
 	description="Профессиональный ремонт квартир в Екатеринбурге без посредников. Косметический от 7500 ₽/м², капитальный от 14500 ₽/м². Точная смета, договор, гарантия 3 года."
 >
 	<Hero client:load />
-	<QuizCTA client:visible />
 	<section id="services">
 		<Services client:visible />
 	</section>
 	<section id="stages">
 		<Stages client:visible />
 	</section>
-	<CalculatorHub client:visible />
 	<Portfolio client:visible />
 	<Contact client:visible />
 </Layout>
