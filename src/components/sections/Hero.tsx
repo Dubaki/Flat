@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import HashScrollLinkButton from '../ui/HashScrollLinkButton';
 import DirectorCard from './DirectorCard';
 
-const WORDS = ['Квартир', 'Комнат', 'Ванной', 'Домов', 'Офисов'];
+const WORDS = ['квартир', 'комнат', 'ванной', 'домов', 'офисов'];
 const TYPE_SPEED = 100;
 const DELETE_SPEED = 60;
 const PAUSE_AFTER_TYPE = 2000;
@@ -11,7 +11,7 @@ const PAUSE_AFTER_DELETE = 350;
 
 const Hero: React.FC = () => {
   const [wordIdx, setWordIdx] = useState(0);
-  const [displayed, setDisplayed] = useState('Квартир');
+  const [displayed, setDisplayed] = useState('квартир');
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -53,9 +53,9 @@ const Hero: React.FC = () => {
           <div className="lg:col-span-7 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
             <h1 className="text-3xl xs:text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
               Ремонт{' '}
-              <span className="text-accent relative inline-block min-w-[3ch]">
+              <span className="text-white relative inline-block min-w-[3ch]">
                 {displayed}
-                <span className="inline-block w-[3px] h-[0.85em] bg-accent align-middle ml-0.5 animate-pulse" />
+                <span className="inline-block w-[3px] h-[0.85em] bg-white align-middle ml-0.5 animate-pulse" />
               </span>
               <br className="hidden sm:block" />
               <span className="italic font-serif text-accent break-keep"> без посредников</span>
