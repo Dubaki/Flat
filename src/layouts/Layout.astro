@@ -2,6 +2,7 @@
 import '../index.css';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import MobileTabBar from '../components/layout/MobileTabBar';
 import CookieConsent from '../components/ui/CookieConsent';
 
 interface Props {
@@ -166,11 +167,12 @@ const ogImageURL = new URL(image, "https://uf66.ru").href;
 	<body>
 		<div class="min-h-screen font-sans w-full overflow-x-hidden break-words">
 			<Navbar client:load />
-			<main class="w-full">
+			<main class="w-full pb-16 lg:pb-0">
 				<slot />
 			</main>
 			<Footer client:visible />
 			<CookieConsent client:idle />
+			<MobileTabBar client:load />
 		</div>
 	</body>
 </html>
